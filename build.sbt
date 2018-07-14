@@ -6,6 +6,8 @@ name := "reservation-reminder"
 
 scalaVersion := "2.12.6"
 
+lazy val `reser` = (project in file(".")).enablePlugins(FlywayPlugin)
+
 libraryDependencies ++= {
   val akkaV       = "2.5.13"
   val akkaHttpV   = "10.1.3"
@@ -17,7 +19,8 @@ libraryDependencies ++= {
     "com.typesafe.akka" %% "akka-stream"             % akkaV,
     "com.typesafe.akka" %% "akka-http"               % akkaHttpV,
     "com.enragedginger" %% "akka-quartz-scheduler" % "1.6.1-akka-2.5.x",
-    "com.github.nscala-time" %% "nscala-time" % "2.18.0"
+    "com.github.nscala-time" %% "nscala-time" % "2.18.0",
+    "com.github.dnvriend" %% "akka-persistence-jdbc" % "3.4.0"
   )
 }
 
@@ -25,3 +28,24 @@ libraryDependencies ++= {
 scalacOptions ++= Seq(
   "-Ypatmat-exhaust-depth", "off"
 )
+
+//********************************************************
+// FlyWay settings
+//********************************************************
+import com.typesafe.config._
+
+val conf = ConfigFactory.parseFile(new File("src/main/resources/database.flyway.conf")).resolve()
+
+flywayDriver := conf.getString("db.default.driver")
+
+flywayUrl := conf.getString("db.default.url")
+
+flywayUser := conf.getString("db.default.username")
+
+flywayPassword := conf.getString("db.default.password")
+
+flywayLocations := Seq("filesystem:src/main/resources/db/migrations")
+
+flywayTarget := conf.getString("migration.target.version")
+
+flywayBaselineVersion := "0.0.0"
