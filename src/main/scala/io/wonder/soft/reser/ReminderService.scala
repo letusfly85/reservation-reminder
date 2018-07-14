@@ -13,7 +13,7 @@ import com.typesafe.config.{ Config, ConfigFactory }
 
 import scala.concurrent.ExecutionContextExecutor
 
-trait Service  {
+trait ReminderService  {
   implicit val system: ActorSystem
   implicit val executor: ExecutionContextExecutor
   implicit val materializer: Materializer
@@ -31,7 +31,7 @@ trait Service  {
     }
 }
 
-object ReminderService extends App with Service {
+object ReminderService extends App with ReminderService {
   override implicit val system: ActorSystem = ActorSystem("reservation-reminder")
   override implicit val executor: ExecutionContextExecutor = system.dispatcher
   override implicit val materializer: Materializer = ActorMaterializer()
