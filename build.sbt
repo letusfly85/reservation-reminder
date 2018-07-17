@@ -20,7 +20,8 @@ libraryDependencies ++= {
     "com.typesafe.akka" %% "akka-http"               % akkaHttpV,
     "com.enragedginger" %% "akka-quartz-scheduler" % "1.6.1-akka-2.5.x",
     "com.github.nscala-time" %% "nscala-time" % "2.18.0",
-    "com.github.dnvriend" %% "akka-persistence-jdbc" % "3.4.0"
+    "com.github.dnvriend" %% "akka-persistence-jdbc" % "3.4.0",
+    "mysql" % "mysql-connector-java" % "5.1.46"
   )
 }
 
