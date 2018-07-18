@@ -11,6 +11,7 @@ lazy val `reser` = (project in file(".")).enablePlugins(FlywayPlugin)
 libraryDependencies ++= {
   val akkaV       = "2.5.13"
   val akkaHttpV   = "10.1.3"
+  val quillV = "2.5.4"
   Seq(
     "com.typesafe.akka" %% "akka-actor"              % akkaV,
     "com.typesafe.akka" %% "akka-persistence"        % akkaV,
@@ -21,7 +22,10 @@ libraryDependencies ++= {
     "com.enragedginger" %% "akka-quartz-scheduler" % "1.6.1-akka-2.5.x",
     "com.github.nscala-time" %% "nscala-time" % "2.18.0",
     "com.github.dnvriend" %% "akka-persistence-jdbc" % "3.4.0",
-    "mysql" % "mysql-connector-java" % "5.1.46"
+    "mysql" % "mysql-connector-java" % "5.1.46",
+    "io.getquill" %% "quill-core" % quillV,
+    "io.getquill" %% "quill-jdbc" % quillV,
+    "io.getquill" %% "quill-async-mysql" % quillV
   )
 }
 
