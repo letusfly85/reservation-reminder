@@ -25,7 +25,8 @@ libraryDependencies ++= {
     "mysql" % "mysql-connector-java" % "5.1.46",
     "io.getquill" %% "quill-core" % quillV,
     "io.getquill" %% "quill-jdbc" % quillV,
-    "io.getquill" %% "quill-async-mysql" % quillV
+    "io.getquill" %% "quill-async-mysql" % quillV,
+    "com.zaxxer" % "HikariCP" % "3.2.0"
   )
 }
 

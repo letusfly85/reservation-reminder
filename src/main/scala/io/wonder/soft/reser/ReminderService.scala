@@ -3,17 +3,18 @@ package io.wonder.soft.reser
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
-import akka.actor.{ ActorRef, ActorSystem, Props }
-import akka.event.{ Logging, LoggingAdapter }
+import akka.actor.{ActorRef, ActorSystem, Props}
+import akka.event.{Logging, LoggingAdapter}
 import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.model.ContentTypes._
-import akka.stream.{ ActorMaterializer, Materializer }
+import akka.stream.{ActorMaterializer, Materializer}
 import akka.util.ByteString
-import com.typesafe.config.{ Config, ConfigFactory }
+import com.typesafe.config.{Config, ConfigFactory}
+import io.wonder.soft.reser.domain.entity.Reserves
 
 import scala.concurrent.ExecutionContextExecutor
 
-trait ReminderService  {
+trait ReminderService {
   implicit val system: ActorSystem
   implicit val executor: ExecutionContextExecutor
   implicit val materializer: Materializer
@@ -25,7 +26,9 @@ trait ReminderService  {
   val routes =
     path("api" / "v1" / "status") {
       (get | post) {
-        logger.info("test")
+        val reserves = Reserves.find(1)
+        println(reserves.toString)
+
         complete("alive")
       }
     }
