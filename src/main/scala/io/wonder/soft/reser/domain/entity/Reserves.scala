@@ -14,12 +14,10 @@ object Reserves extends DBConfig {
     querySchema[Reserves]("reserves")
   }
 
-  def findQuery(id: Int)= quote {
-    reserves.filter(u => u.id == lift(id))
-  }
-
   def find(id: Int) = {
-    val result = this.run(findQuery(id))
+    val result = this.run(quote {
+      reserves.filter(u => u.id == lift(id))
+    })
 
     Await.result(result, 5.seconds)
   }
