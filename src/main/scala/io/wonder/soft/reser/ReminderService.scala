@@ -10,7 +10,6 @@ import akka.http.scaladsl.model.ContentTypes._
 import akka.stream.{ActorMaterializer, Materializer}
 import akka.util.ByteString
 import com.typesafe.config.{Config, ConfigFactory}
-import io.wonder.soft.reser.domain.entity.Reserves
 
 import scala.concurrent.ExecutionContextExecutor
 
@@ -26,9 +25,6 @@ trait ReminderService {
   val routes =
     path("api" / "v1" / "status") {
       (get | post) {
-        val reserves = Reserves.find(1)
-        println(reserves.toString)
-
         complete("alive")
       }
     }
