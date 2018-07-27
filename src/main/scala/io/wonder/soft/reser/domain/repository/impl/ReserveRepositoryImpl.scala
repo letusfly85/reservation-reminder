@@ -31,4 +31,6 @@ class ReserveRepositoryImpl extends DBConfig with ReserveRepository {
     }
   }
 
+  def searchByUserId(userId: String): List[ReserveEntity] = List.empty[ReserveEntity]
+
 }
