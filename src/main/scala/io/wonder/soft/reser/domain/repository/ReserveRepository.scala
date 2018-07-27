@@ -6,4 +6,6 @@ trait ReserveRepository {
 
   def find(id: Int): Option[ReserveEntity]
 
+  def searchByUserId(userId: String): List[ReserveEntity]
+
 }
