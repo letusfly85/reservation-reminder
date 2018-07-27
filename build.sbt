@@ -12,6 +12,7 @@ libraryDependencies ++= {
   val akkaV       = "2.5.13"
   val akkaHttpV   = "10.1.3"
   val quillV = "2.5.4"
+  val circeV = "0.9.3"
   Seq(
     "com.typesafe.akka" %% "akka-actor"              % akkaV,
     "com.typesafe.akka" %% "akka-persistence"        % akkaV,
@@ -26,7 +27,11 @@ libraryDependencies ++= {
     "io.getquill" %% "quill-core" % quillV,
     "io.getquill" %% "quill-jdbc" % quillV,
     "io.getquill" %% "quill-async-mysql" % quillV,
-    "com.zaxxer" % "HikariCP" % "3.2.0"
+    "com.zaxxer" % "HikariCP" % "3.2.0",
+    "io.circe" %% "circe-core" % circeV,
+    "io.circe" %% "circe-generic" % circeV,
+    "io.circe" %% "circe-parser" % circeV,
+    "de.heikoseeberger" %% "akka-http-circe" % "1.21.0"
   )
 }
 
