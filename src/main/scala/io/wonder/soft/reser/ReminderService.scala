@@ -10,6 +10,9 @@ import akka.http.scaladsl.model.ContentTypes._
 import akka.stream.{ActorMaterializer, Materializer}
 import akka.util.ByteString
 import com.typesafe.config.{Config, ConfigFactory}
+import io.wonder.soft.reser.application.routes.ReserveRoute
+import io.wonder.soft.reser.application.services.ReserveService
+import io.wonder.soft.reser.domain.repository.impl.ReserveRepositoryImpl
 
 import scala.concurrent.ExecutionContextExecutor
 
@@ -22,12 +25,17 @@ trait ReminderService {
   def config: Config
   def logger: LoggingAdapter
 
+  def reserveRoute = new ReserveRoute(reserveService = new ReserveService())
+
   val routes =
     path("api" / "v1" / "status") {
       (get | post) {
         complete("alive")
       }
+    } ~ pathPrefix("v1") {
+      reserveRoute.route
     }
+
 }
 
 object ReminderService extends App with ReminderService {
