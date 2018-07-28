@@ -16,7 +16,7 @@ import io.wonder.soft.reser.domain.repository.impl.ReserveRepositoryImpl
 
 import scala.concurrent.ExecutionContextExecutor
 
-trait ReminderService {
+trait ReminderApp extends AppModule {
   implicit val system: ActorSystem
   implicit val executor: ExecutionContextExecutor
   implicit val materializer: Materializer
@@ -25,7 +25,7 @@ trait ReminderService {
   def config: Config
   def logger: LoggingAdapter
 
-  def reserveRoute = new ReserveRoute(reserveService = new ReserveService())
+  def reserveRoute = new ReserveRoute(reserveService)
 
   val routes =
     path("api" / "v1" / "status") {
@@ -38,7 +38,7 @@ trait ReminderService {
 
 }
 
-object ReminderService extends App with ReminderService {
+object ReminderApp extends App with ReminderApp {
   override implicit val system: ActorSystem = ActorSystem("reservation-reminder")
   override implicit val executor: ExecutionContextExecutor = system.dispatcher
   override implicit val materializer: Materializer = ActorMaterializer()
