@@ -13,6 +13,7 @@ libraryDependencies ++= {
   val akkaHttpV   = "10.1.3"
   val quillV = "2.5.4"
   val circeV = "0.9.3"
+  val macwireV = "2.3.1"
   Seq(
     "com.typesafe.akka" %% "akka-actor"              % akkaV,
     "com.typesafe.akka" %% "akka-persistence"        % akkaV,
@@ -31,7 +32,8 @@ libraryDependencies ++= {
     "io.circe" %% "circe-core" % circeV,
     "io.circe" %% "circe-generic" % circeV,
     "io.circe" %% "circe-parser" % circeV,
-    "de.heikoseeberger" %% "akka-http-circe" % "1.21.0"
+    "de.heikoseeberger" %% "akka-http-circe" % "1.21.0",
+    "com.softwaremill.macwire" %% "macros" % macwireV
   )
 }
 
