@@ -7,6 +7,7 @@ import io.wonder.soft.reser.domain.repository.ReserveRepository
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import io.getquill._
+import sun.reflect.generics.reflectiveObjects.NotImplementedException
 
 import scala.util.{Failure, Success, Try}
 
@@ -35,6 +36,10 @@ class ReserveRepositoryImpl extends DBConfig with ReserveRepository {
     List.empty[ReserveEntity]
 
     List(ReserveEntity(1, "test"))
+  }
+
+  def destroy(id: Int): Either[Exception, ReserveEntity] = {
+    Left(new NotImplementedException))
   }
 
 }
