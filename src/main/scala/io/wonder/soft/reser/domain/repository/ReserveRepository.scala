@@ -8,4 +8,6 @@ trait ReserveRepository {
 
   def searchByUserId(userId: String): List[ReserveEntity]
 
+  def destroy(id: Int): Either[Exception, ReserveEntity]
+
 }
