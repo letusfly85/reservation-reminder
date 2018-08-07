@@ -33,13 +33,15 @@ libraryDependencies ++= {
     "io.circe" %% "circe-generic" % circeV,
     "io.circe" %% "circe-parser" % circeV,
     "de.heikoseeberger" %% "akka-http-circe" % "1.21.0",
-    "com.softwaremill.macwire" %% "macros" % macwireV
+    "com.softwaremill.macwire" %% "macros" % macwireV,
+    "org.typelevel" %% "cats-core" % "1.2.0"
   )
 }
 
 //refs: https://github.com/gerferra/amphip/blob/master/build.sbt
 scalacOptions ++= Seq(
-  "-Ypatmat-exhaust-depth", "off"
+  "-Ypatmat-exhaust-depth", "off",
+  "-Ypartial-unification"
 )
 
 //********************************************************
