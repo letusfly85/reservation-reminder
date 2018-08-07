@@ -18,6 +18,14 @@ class ReserveRepositoryImpl extends DBConfig with ReserveRepository {
     querySchema[ReserveEntity]("reserves")
   }
 
+  def findF(id: Int) = {
+    val query = this.run(quote {
+      reserves.filter(u => u.id == lift(id))
+    })
+
+    query.map{ future => Right(future.headOption) }.recover { case exception => Left(new Exception(exception)) }
+  }
+
   def find(id: Int) = {
     val result = this.run(quote {
       reserves.filter(u => u.id == lift(id))
