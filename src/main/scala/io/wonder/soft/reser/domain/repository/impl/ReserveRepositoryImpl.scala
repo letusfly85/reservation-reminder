@@ -1,10 +1,11 @@
 package io.wonder.soft.reser.domain.repository.impl
 
+import cats.data.{EitherT, OptionT}
 import io.wonder.soft.reser.infra.DBConfig
 import io.wonder.soft.reser.domain.entity.ReserveEntity
 import io.wonder.soft.reser.domain.repository.ReserveRepository
 
-import scala.concurrent.Await
+import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration._
 import io.getquill._
 
@@ -18,12 +19,12 @@ class ReserveRepositoryImpl extends DBConfig with ReserveRepository {
     querySchema[ReserveEntity]("reserves")
   }
 
-  def findF(id: Int) = {
+  def findT(id: Int)(implicit ec: ExecutionContext): OptionT[Future, ReserveEntity] = {
     val query = this.run(quote {
       reserves.filter(u => u.id == lift(id))
     })
 
-    query.map{ future => Right(future.headOption) }.recover { case exception => Left(new Exception(exception)) }
+    OptionT(query.map(future => future.headOption))
   }
 
   def find(id: Int) = {
