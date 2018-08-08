@@ -32,7 +32,7 @@ trait ReminderApp extends AppModule {
       (get | post) {
         complete("alive")
       }
-    } ~ pathPrefix("v1") {
+    } ~ pathPrefix("api" / "v1") {
       reserveRoute.route
     }
 

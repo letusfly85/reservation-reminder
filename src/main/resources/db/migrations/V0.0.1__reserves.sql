@@ -1,5 +1,6 @@
 CREATE TABLE reserves (
   id                INT AUTO_INCREMENT,
+  reserved_user_id  VARCHAR(300) NOT NULL,
   name              VARCHAR(300) NOT NULL,
   description       VARCHAR(2000),
   reserved_from     DATETIME NOT NULL,

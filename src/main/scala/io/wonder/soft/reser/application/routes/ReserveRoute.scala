@@ -3,23 +3,25 @@ package io.wonder.soft.reser.application.routes
 
 import akka.http.scaladsl.server.Directives._
 import io.wonder.soft.reser.application.services.ReserveService
-
 import io.circe.generic.auto._
 import io.circe.syntax._
-
 import akka.http.scaladsl.model.StatusCodes
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.duration._
 
 class ReserveRoute(reserveService: ReserveService)(implicit executionContext: ExecutionContext) extends FailFastCirceSupport {
 
-  val route = pathPrefix("reserves") {
-    pathEndOrSingleSlash {
-      get {
-        val reserves = reserveService.searchByUserId("")
-        val json = reserves.map(_.asJson).asJson
-        complete(json)
+  val route = pathPrefix("reserves" / Segment) { userId =>
+    get {
+      val futureReserves= reserveService.searchByUserId(userId)
+      val reserveJson = futureReserves.map { reserveEntities =>
+        reserveEntities.map(_.asJson).asJson
+      }
+
+      completeOrRecoverWith(reserveJson) { extraction =>
+        failWith(extraction)
       }
     }
     /*~

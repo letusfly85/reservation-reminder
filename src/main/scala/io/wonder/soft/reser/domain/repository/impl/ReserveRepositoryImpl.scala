@@ -16,10 +16,10 @@ class ReserveRepositoryImpl extends DBConfig with ReserveRepository {
   import scala.concurrent.ExecutionContext.Implicits.global
 
   val reserves = quote {
-    querySchema[ReserveEntity]("reserves")
+    querySchema[ReserveEntity]("reserves", _.reservedUserId -> "reserved_user_id")
   }
 
-  def findT(id: Int)(implicit ec: ExecutionContext): OptionT[Future, ReserveEntity] = {
+  def findT(id: Int): OptionT[Future, ReserveEntity] = {
     val query = this.run(quote {
       reserves.filter(u => u.id == lift(id))
     })
@@ -36,12 +36,14 @@ class ReserveRepositoryImpl extends DBConfig with ReserveRepository {
       Await.result(result, 5.seconds)
     } match {
       case Success(result) => result.headOption
-      case Failure(exception) => None
+      case Failure(_) => None
     }
   }
 
-  def searchByUserId(userId: String): List[ReserveEntity] = {
-    List.empty[ReserveEntity]
+  def searchByUserId(userId: String): Future[List[ReserveEntity]] = {
+    this.run(quote {
+      reserves.filter(u => u.reservedUserId == lift(userId))
+    })
   }
 
   def destroy(id: Int): Either[Exception, ReserveEntity] = {

@@ -1,6 +1,8 @@
 package io.wonder.soft.reser.application.services
 
-class ReserveService extends ServiceModule {
+import io.wonder.soft.reser.domain.repository.ReserveRepository
+
+class ReserveService(reserveRepository: ReserveRepository) {
 
   def searchByUserId(userId: String) = reserveRepository.searchByUserId(userId)
 
