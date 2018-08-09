@@ -13,8 +13,9 @@ import scala.concurrent.duration._
 
 class ReserveRoute(reserveService: ReserveService)(implicit executionContext: ExecutionContext) extends FailFastCirceSupport {
 
-  val route = pathPrefix("reserves" / Segment) { userId =>
+  val route = pathPrefix("reserves") {
     get {
+      parameters('userId) { userId =>
       val futureReserves= reserveService.searchByUserId(userId)
       val reserveJson = futureReserves.map { reserveEntities =>
         reserveEntities.map(_.asJson).asJson
