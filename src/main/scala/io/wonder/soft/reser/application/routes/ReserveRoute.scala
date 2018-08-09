@@ -16,13 +16,14 @@ class ReserveRoute(reserveService: ReserveService)(implicit executionContext: Ex
   val route = pathPrefix("reserves") {
     get {
       parameters('userId) { userId =>
-      val futureReserves= reserveService.searchByUserId(userId)
-      val reserveJson = futureReserves.map { reserveEntities =>
-        reserveEntities.map(_.asJson).asJson
-      }
+        val futureReserves = reserveService.searchByUserId(userId)
+        val reserveJson = futureReserves.map { reserveEntities =>
+          reserveEntities.map(_.asJson).asJson
+        }
 
-      completeOrRecoverWith(reserveJson) { extraction =>
-        failWith(extraction)
+        completeOrRecoverWith(reserveJson) { extraction =>
+          failWith(extraction)
+        }
       }
     }
     /*~
