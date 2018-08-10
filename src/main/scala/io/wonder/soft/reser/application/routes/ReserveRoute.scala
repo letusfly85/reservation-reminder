@@ -25,6 +25,13 @@ class ReserveRoute(reserveService: ReserveService)(implicit executionContext: Ex
           failWith(extraction)
         }
       }
+    } ~ pathPrefix("reserves" / Segment ) { id =>
+      get {
+        reserveService.find(id.toInt) match {
+          case Some(reserve) => complete(reserve.asJson)
+          case None => complete("")
+        }
+      }
     }
     /*~
       pathPrefix(Segment) { id =>
