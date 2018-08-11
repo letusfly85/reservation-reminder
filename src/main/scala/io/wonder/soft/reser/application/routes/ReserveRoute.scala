@@ -28,8 +28,11 @@ class ReserveRoute(reserveService: ReserveService)(implicit executionContext: Ex
     } ~ pathPrefix("reserves" / Segment ) { id =>
       get {
         reserveService.find(id.toInt) match {
-          case Some(reserve) => complete(reserve.asJson)
-          case None => complete("")
+          case Some(reserve) =>
+            complete(StatusCodes.OK, reserve.asJson)
+
+          case None =>
+            complete(StatusCodes.NotFound, "")
         }
       }
     }
