@@ -52,30 +52,5 @@ class ReserveRoute(reserveService: ReserveService)(implicit executionContext: Ex
         }
       }
     }
-    /*~
-      pathPrefix(Segment) { id =>
-        pathEndOrSingleSlash {
-          get {
-            complete(getProfile(id).map {
-              case Some(profile) =>
-                OK -> profile.asJson
-              case None =>
-                BadRequest -> None.asJson
-            })
-          } ~
-            post {
-              entity(as[UserProfileUpdate]) { userUpdate =>
-                complete(updateProfile(id, userUpdate).map {
-                  case Some(profile) =>
-                    OK -> profile.asJson
-                  case None =>
-                    BadRequest -> None.asJson
-                })
-              }
-            }
-        }
-      }
-      */
   }
-
 }
