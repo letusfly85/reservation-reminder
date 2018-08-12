@@ -9,14 +9,14 @@ import akka.http.scaladsl.model.StatusCodes
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import io.wonder.soft.reser.domain.entity.NotFoundExceptionEntity
 
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
 class ReserveRoute(reserveService: ReserveService)(implicit executionContext: ExecutionContext) extends FailFastCirceSupport {
 
   val route = pathPrefix("reserves") {
-    get {
-      parameters('userId) { userId =>
+    parameters('userId) { userId =>
+      get {
         val futureReserves = reserveService.searchByUserId(userId)
         val reserveJson = futureReserves.map { reserveEntities =>
           reserveEntities.map(_.asJson).asJson
@@ -28,6 +28,18 @@ class ReserveRoute(reserveService: ReserveService)(implicit executionContext: Ex
       }
     } ~ path(Segment) { id =>
       get {
+        reserveService.find(id.toInt) match {
+          case Some(reserve) =>
+            complete(StatusCodes.OK, reserve.asJson)
+
+          case None =>
+            complete(
+              StatusCodes.NotFound,
+              NotFoundExceptionEntity(message = s"${id} not found for reserves").asJson
+            )
+        }
+      } ~ post {
+        //TODO implement
         reserveService.find(id.toInt) match {
           case Some(reserve) =>
             complete(StatusCodes.OK, reserve.asJson)
