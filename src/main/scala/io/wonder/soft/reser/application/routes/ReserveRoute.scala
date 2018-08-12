@@ -7,6 +7,7 @@ import io.circe.generic.auto._
 import io.circe.syntax._
 import akka.http.scaladsl.model.StatusCodes
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
+import io.wonder.soft.reser.domain.entity.NotFoundExceptionEntity
 
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration._
@@ -25,14 +26,17 @@ class ReserveRoute(reserveService: ReserveService)(implicit executionContext: Ex
           failWith(extraction)
         }
       }
-    } ~ pathPrefix("reserves" / Segment ) { id =>
+    } ~ path(Segment) { id =>
       get {
         reserveService.find(id.toInt) match {
           case Some(reserve) =>
             complete(StatusCodes.OK, reserve.asJson)
 
           case None =>
-            complete(StatusCodes.NotFound, "")
+            complete(
+              StatusCodes.NotFound,
+              NotFoundExceptionEntity(message = s"${id} not found for reserves").asJson
+            )
         }
       }
     }
