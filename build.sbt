@@ -9,7 +9,7 @@ scalaVersion := "2.12.6"
 lazy val `reser` = (project in file(".")).enablePlugins(FlywayPlugin)
 
 libraryDependencies ++= {
-  val akkaV       = "2.5.13"
+  val akkaV       = "2.5.14"
   val akkaHttpV   = "10.1.3"
   val quillV = "2.5.4"
   val circeV = "0.9.3"
