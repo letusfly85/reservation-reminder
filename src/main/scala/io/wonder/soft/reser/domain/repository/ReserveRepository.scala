@@ -1,6 +1,6 @@
 package io.wonder.soft.reser.domain.repository
 
-import cats.data.OptionT
+import cats.data.{EitherT, OptionT}
 import io.wonder.soft.reser.domain.entity.ReserveEntity
 
 import scala.concurrent.Future
@@ -12,6 +12,8 @@ trait ReserveRepository {
   def find(id: Int): Option[ReserveEntity]
 
   def searchByUserId(userId: String): Future[List[ReserveEntity]]
+
+  def updateT(reserveEntity: ReserveEntity): EitherT[Future, Throwable, ReserveEntity]
 
   def destroy(id: Int): Either[Exception, ReserveEntity]
 

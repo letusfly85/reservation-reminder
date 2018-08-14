@@ -1,11 +1,12 @@
 package io.wonder.soft.reser.domain.repository.impl
 
-import cats.data.{EitherT, OptionT}
+import cats.data._
+import cats.implicits._
 import io.wonder.soft.reser.infra.DBConfig
 import io.wonder.soft.reser.domain.entity.ReserveEntity
 import io.wonder.soft.reser.domain.repository.ReserveRepository
 
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 import io.getquill._
 
@@ -44,6 +45,21 @@ class ReserveRepositoryImpl extends DBConfig with ReserveRepository {
     this.run(quote {
       reserves.filter(u => u.reservedUserId == lift(userId))
     })
+  }
+
+
+  def updateT(reserveEntity: ReserveEntity): EitherT[Future, Throwable, ReserveEntity] = {
+    Try {
+      this.run(quote {
+        reserves.filter(u => u.id == lift(reserveEntity.id)).update(lift(reserveEntity))
+      })
+    } match {
+      case Success(_) =>
+        EitherT.right[Throwable](Future {reserveEntity})
+
+      case Failure(exception) =>
+        EitherT.left[ReserveEntity](Future.successful(exception))
+    }
   }
 
   def destroy(id: Int): Either[Exception, ReserveEntity] = {

@@ -6,8 +6,9 @@ import io.wonder.soft.reser.application.services.ReserveService
 import io.circe.generic.auto._
 import io.circe.syntax._
 import akka.http.scaladsl.model.StatusCodes
+import cats.data.EitherT
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
-import io.wonder.soft.reser.domain.entity.NotFoundExceptionEntity
+import io.wonder.soft.reser.domain.entity.{NotFoundExceptionEntity, ReserveEntity}
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
@@ -39,16 +40,20 @@ class ReserveRoute(reserveService: ReserveService)(implicit executionContext: Ex
             )
         }
       } ~ post {
-        //TODO implement
-        reserveService.find(id.toInt) match {
-          case Some(reserve) =>
-            complete(StatusCodes.OK, reserve.asJson)
+        val entity = ReserveEntity(id = id.toInt, reservedUserId = "1", name = "test")
+        val newValue = reserveService.updateT(entity).value
 
-          case None =>
-            complete(
-              StatusCodes.NotFound,
-              NotFoundExceptionEntity(message = s"${id} not found for reserves").asJson
-            )
+        val reserveJson = newValue.map { reserveEntities =>
+          reserveEntities match {
+            case Right(entity) =>
+              entity.asJson
+
+            case Left(throwable) =>
+              Map("" -> "").asJson
+          }
+        }
+        completeOrRecoverWith(reserveJson) { extraction =>
+          failWith(extraction)
         }
       }
     }
