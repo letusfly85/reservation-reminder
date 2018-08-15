@@ -5,7 +5,7 @@ import io.wonder.soft.reser.domain.repository.ReserveRepository
 
 class ReserveService(reserveRepository: ReserveRepository) {
 
-  def find(id: Int) = reserveRepository.find(id)
+  def findT(id: Int) = reserveRepository.findT(id)
 
   def searchByUserId(userId: String) = reserveRepository.searchByUserId(userId)
 
