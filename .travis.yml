@@ -1,0 +1,27 @@
+language: scala
+
+scala:
+  - 2.12.6
+
+services:
+  - mysql
+
+cache:
+  directories:
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt/boot
+
+before_install:
+  - mysql -e 'CREATE DATABASE reser DEFAULT CHARACTER SET utf8 collate utf8_general_ci';
+
+before_script:
+  - cat /dev/null | sbt clean test:compile flywayMigrate
+
+script:
+  # - sbt coverage test coverageReport
+  - find $HOME/.sbt -name "*.lock" | xargs rm
+  - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
+
+after_success:
+  # - bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
+  - echo ok
