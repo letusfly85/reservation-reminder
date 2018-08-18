@@ -49,8 +49,8 @@ scalacOptions ++= Seq(
 //********************************************************
 import com.typesafe.config._
 
-val env = System.getenv("ENV") match {
-  case "test" => "test"
+val env = System.getenv("CI") match {
+  case "true" => "test"
   case _ => "default"
 }
 
