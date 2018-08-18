@@ -18,6 +18,7 @@ before_script:
   - cat /dev/null | sbt clean test:compile flywayMigrate
 
 script:
+  - sbt test
   # - sbt coverage test coverageReport
   - find $HOME/.sbt -name "*.lock" | xargs rm
   - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
