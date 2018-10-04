@@ -2,11 +2,11 @@ organization := "io.wonder.soft"
 
 version := "1.0.0-SNAPSHOT"
 
-name := "reservation-reminder"
+name := "reserve-reminder"
 
 scalaVersion := "2.12.7"
 
-lazy val `reser` = (project in file(".")).enablePlugins(FlywayPlugin)
+lazy val `reser` = (project in file("."))
 
 libraryDependencies ++= {
   val akkaV       = "2.5.17"
@@ -43,29 +43,3 @@ scalacOptions ++= Seq(
   "-Ypatmat-exhaust-depth", "off",
   "-Ypartial-unification"
 )
-
-//********************************************************
-// FlyWay settings
-//********************************************************
-import com.typesafe.config._
-
-val env = System.getenv("CI") match {
-  case "true" => "test"
-  case _ => "default"
-}
-
-val conf = ConfigFactory.parseFile(new File("src/main/resources/database.flyway.conf")).resolve()
-
-flywayDriver := conf.getString(s"db.${env}.driver")
-
-flywayUrl := conf.getString(s"db.${env}.url")
-
-flywayUser := conf.getString(s"db.${env}.username")
-
-flywayPassword := conf.getString(s"db.${env}.password")
-
-flywayLocations := Seq("filesystem:src/main/resources/db/migrations")
-
-flywayTarget := conf.getString("migration.target.version")
-
-flywayBaselineVersion := "0.0.0"

@@ -12,10 +12,12 @@ cache:
     - $HOME/.sbt/boot
 
 before_install:
-  - mysql -e 'CREATE DATABASE reser DEFAULT CHARACTER SET utf8 collate utf8_general_ci';
+  - mysql -e 'CREATE DATABASE reser DEFAULT CHARACTER SET utf8mb4 collate utf8_general_ci';
 
 before_script:
-  - cat /dev/null | sbt clean test:compile flywayMigrate
+  - cp src/main/resources/conf/flyway.test.conf src/main/resources/conf/flyway.conf
+  - bash scripts/db-migrate.sh
+  - cat /dev/null | sbt clean test:compile
 
 script:
   - sbt test
