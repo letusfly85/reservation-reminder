@@ -62,21 +62,17 @@ class ReserveRepositoryImpl extends DBConfig with ReserveRepository {
     }
   }
 
-  def destroy(id: Int): Either[Exception, ReserveEntity] = {
-    this.find(id).map{ entity =>
-      val result = this.run(quote {
-        reserves.filter(u => u.id == lift(id)).delete
+  def destroyT(id: Int): EitherT[Future, Throwable, ReserveEntity] = {
+    Try {
+      val entity = this.find(id).get
+      this.run(quote {
+        reserves.filter(u => u.id == lift(entity.id)).delete
       })
-
-      Try {
-        Await.result(result, 5.seconds)
-        entity
-      } match {
-        case Success(entity) =>  return Right(entity)
-        case Failure(exception) => return Left(new RuntimeException(exception))
+      entity
+    } match {
+      case Success(entity) => EitherT.right[Throwable](Future.successful(entity))
+      case Failure(exception) => EitherT.left[ReserveEntity](Future.successful(exception))
       }
-
-    }.toRight(new Exception(s"reserves ${id} not found"))
   }
 
 }
