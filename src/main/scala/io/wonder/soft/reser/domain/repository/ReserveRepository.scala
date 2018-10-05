@@ -15,6 +15,6 @@ trait ReserveRepository {
 
   def updateT(reserveEntity: ReserveEntity): EitherT[Future, Throwable, ReserveEntity]
 
-  def destroyT(id: Int): Either[Exception, ReserveEntity]
+  def destroyT(id: Int): EitherT[Future, Throwable, ReserveEntity]
 
 }
