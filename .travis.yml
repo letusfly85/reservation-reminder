@@ -17,7 +17,7 @@ before_install:
 before_script:
   - docker network create reser
   - cp src/main/resources/conf/flyway.test.conf src/main/resources/conf/flyway.conf
-  - cp src/main/resources/conf/application.test.conf src/main/resources/conf/application.conf
+  - cp src/main/resources/application.test.conf src/main/resources/application.conf
   - bash scripts/db-migrate.sh
   - cat /dev/null | sbt clean test:compile
 
