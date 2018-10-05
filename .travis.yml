@@ -15,6 +15,7 @@ before_install:
   - mysql -e 'CREATE DATABASE reser DEFAULT CHARACTER SET utf8mb4 collate utf8mb4_general_ci';
 
 before_script:
+  - docker network create reser
   - cp src/main/resources/conf/flyway.test.conf src/main/resources/conf/flyway.conf
   - bash scripts/db-migrate.sh
   - cat /dev/null | sbt clean test:compile
