@@ -12,6 +12,7 @@ import akka.util.ByteString
 import com.typesafe.config.{Config, ConfigFactory}
 import io.wonder.soft.reser.application.routes.ReserveRoute
 import io.wonder.soft.reser.application.services.ReserveService
+import io.wonder.soft.reser.domain.job.SimpleJobExecutor
 import io.wonder.soft.reser.domain.repository.impl.ReserveRepositoryImpl
 
 import scala.concurrent.ExecutionContextExecutor
@@ -30,6 +31,8 @@ trait ReminderApp extends AppModule {
   val routes =
     path("api" / "v1" / "status") {
       (get | post) {
+        val executor = new SimpleJobExecutor
+
         complete("alive")
       }
     } ~ pathPrefix("api" / "v1") {

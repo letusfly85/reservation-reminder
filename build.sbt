@@ -17,12 +17,11 @@ libraryDependencies ++= {
   Seq(
     "com.typesafe.akka" %% "akka-actor"              % akkaV,
     "com.typesafe.akka" %% "akka-persistence"        % akkaV,
+    "com.typesafe.akka" %% "akka-persistence-query"  % akkaV,
     "com.typesafe.akka" %% "akka-slf4j"              % akkaV,
     "ch.qos.logback"    %  "logback-classic"         % "1.1.7",
     "com.typesafe.akka" %% "akka-stream"             % akkaV,
     "com.typesafe.akka" %% "akka-http"               % akkaHttpV,
-    "com.enragedginger" %% "akka-quartz-scheduler" % "1.6.1-akka-2.5.x",
-    "com.github.nscala-time" %% "nscala-time" % "2.18.0",
     "com.github.dnvriend" %% "akka-persistence-jdbc" % "3.4.0",
     "mysql" % "mysql-connector-java" % "5.1.46",
     "io.getquill" %% "quill-core" % quillV,
@@ -34,7 +33,8 @@ libraryDependencies ++= {
     "io.circe" %% "circe-parser" % circeV,
     "de.heikoseeberger" %% "akka-http-circe" % "1.21.0",
     "com.softwaremill.macwire" %% "macros" % macwireV,
-    "org.typelevel" %% "cats-core" % "1.2.0"
+    "org.typelevel" %% "cats-core" % "1.2.0",
+    "org.quartz-scheduler" % "quartz" % "2.3.0"
   )
 }
 
