@@ -11,6 +11,8 @@ class SimpleJobExecutor {
       .withIdentity("job1", "group1")
       .build
 
+  job.getJobDataMap.put("command", "my command!")
+
   val trigger: Trigger =
     TriggerBuilder
       .newTrigger.withIdentity("trigger1", "group1")
