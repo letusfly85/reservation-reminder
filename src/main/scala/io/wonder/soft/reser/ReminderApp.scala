@@ -32,6 +32,8 @@ trait ReminderApp extends AppModule {
     path("api" / "v1" / "status") {
       (get | post) {
         val executor = new SimpleJobExecutor
+        executor.setCommand("echo hello")
+        executor.startSchedule()
 
         complete("alive")
       }
