@@ -11,8 +11,6 @@ class SimpleJobExecutor {
       .withIdentity("job1", "group1")
       .build
 
-  job.getJobDataMap.put("command", "my command!")
-
   val trigger: Trigger =
     TriggerBuilder
       .newTrigger.withIdentity("trigger1", "group1")
@@ -21,13 +19,20 @@ class SimpleJobExecutor {
       .build
 
   var scheduler: Scheduler = _
-  try {
-    scheduler = StdSchedulerFactory.getDefaultScheduler()
-    scheduler.scheduleJob(job, trigger)
-    scheduler.start
-  } catch {
-    case e: Exception =>
-      throw new RuntimeException(e)
+
+  def setCommand(command: String): Unit = {
+    job.getJobDataMap.put("command", command)
+  }
+
+  def startSchedule() = {
+    try {
+      scheduler = StdSchedulerFactory.getDefaultScheduler()
+      scheduler.scheduleJob(job, trigger)
+      scheduler.start
+    } catch {
+      case e: Exception =>
+        throw new RuntimeException(e)
+    }
   }
 
 }
