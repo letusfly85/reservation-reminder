@@ -1,5 +1,7 @@
 package io.wonder.soft.reser
 
+import java.util.Date
+
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
@@ -12,7 +14,7 @@ import akka.util.ByteString
 import com.typesafe.config.{Config, ConfigFactory}
 import io.wonder.soft.reser.application.routes.ReserveRoute
 import io.wonder.soft.reser.application.services.ReserveService
-import io.wonder.soft.reser.domain.job.SimpleJobExecutor
+import io.wonder.soft.reser.domain.job.{SimpleJobExecutor, SimpleJobGenerator}
 import io.wonder.soft.reser.domain.repository.impl.ReserveRepositoryImpl
 
 import scala.concurrent.ExecutionContextExecutor
@@ -31,9 +33,10 @@ trait ReminderApp extends AppModule {
   val routes =
     path("api" / "v1" / "status") {
       (get | post) {
-        val executor = new SimpleJobExecutor
-        executor.setCommand("echo hello")
-        executor.startSchedule()
+        val job = SimpleJobGenerator.generateJob("test", "test", "echo hello")
+        val trigger = SimpleJobGenerator.generateTrigger("test", "test", new Date(), 3, 1)
+
+        SimpleJobExecutor.startSchedule(job, trigger)
 
         complete("alive")
       }
