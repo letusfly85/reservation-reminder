@@ -31,6 +31,8 @@ class SimpleJob extends org.quartz.Job {
         line :: acc
       }
 
+      executeFile.delete()
+
       result.mkString("\n")
     } match {
       case Success(result) => logger.info(result)

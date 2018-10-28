@@ -11,6 +11,7 @@ object SimpleJobExecutor {
     try {
       scheduler = StdSchedulerFactory.getDefaultScheduler()
       scheduler.scheduleJob(job, trigger)
+      scheduler.getListenerManager.addJobListener(new SimpleJobListener(job.getKey.getName))
       scheduler.start
     } catch {
       case e: Exception =>
