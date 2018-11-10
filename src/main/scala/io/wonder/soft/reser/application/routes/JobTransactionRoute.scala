@@ -14,7 +14,7 @@ import scala.concurrent.ExecutionContext
 class JobTransactionRoute(jobTransactionService: JobTransactionService)(implicit executionContext: ExecutionContext) extends FailFastCirceSupport {
   implicit val localDateEncoder = new Encoder[DateTime] {
     final def apply(a: DateTime): Json =
-      Json.fromString(a.toString("yyyy-MM-dd"))
+      Json.fromString(a.toString("yyyy-MM-dd'T'HH:mm:ss"))
   }
 
   val route = pathPrefix("job-transactions") {

@@ -27,4 +27,13 @@ class JobTransactionRepositoryImpl extends DBConfig with JobTransactionRepositor
     })
   }
 
+  /**
+    * TODO
+    * @param transactionEntity
+    * @return
+    */
+  def create(transactionEntity: JobTransactionEntity): EitherT[Future, Throwable, JobTransactionEntity] = {
+    ???
+  }
+
 }
