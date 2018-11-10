@@ -1,18 +1,19 @@
 package io.wonder.soft.reser.domain.entity
 
-import java.util.Date
+import org.joda.time.DateTime
 
-final case class JobTransactionEntity (
+final case class JobTransactionEntity
+(
   id: Int,
   reserveId: Int,
   jobId: String,
   jobName: String,
   jobStatus: String,
-  executedAt: Date,
-  finishedAt: Date,
-  failedAt: Option[Date],
+  executedAt: DateTime,
+  finishedAt: DateTime,
+  failedAt: Option[DateTime],
   failMessage: Option[String],
-  canceledAt: Option[Date]
+  canceledAt: Option[DateTime]
 ) {
   require(id > 0, "")
   require(reserveId > 0, "")
