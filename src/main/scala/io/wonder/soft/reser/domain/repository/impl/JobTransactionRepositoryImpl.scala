@@ -3,10 +3,7 @@ package io.wonder.soft.reser.domain.repository.impl
 import cats.data._
 import cats.implicits._
 
-import scala.concurrent.{Await, Future}
-import scala.concurrent.duration._
-import io.getquill._
-
+import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
 
 import io.wonder.soft.reser.infra.DBConfig
@@ -28,12 +25,21 @@ class JobTransactionRepositoryImpl extends DBConfig with JobTransactionRepositor
   }
 
   /**
-    * TODO
     * @param transactionEntity
     * @return
     */
   def create(transactionEntity: JobTransactionEntity): EitherT[Future, Throwable, JobTransactionEntity] = {
-    ???
+    Try {
+      this.run(quote {
+        query[JobTransactionEntity].insert(lift(transactionEntity))
+      })
+    } match {
+      case Success(_) =>
+        EitherT.right[Throwable](Future {transactionEntity})
+
+      case Failure(exception) =>
+        EitherT.left[JobTransactionEntity](Future.successful(exception))
+    }
   }
 
   /**
