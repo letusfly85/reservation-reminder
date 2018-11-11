@@ -11,4 +11,6 @@ trait JobTransactionRepository {
 
   def create(transactionEntity: JobTransactionEntity): EitherT[Future, Throwable, JobTransactionEntity]
 
+  def update(transactionEntity: JobTransactionEntity): EitherT[Future, Throwable, JobTransactionEntity]
+
 }

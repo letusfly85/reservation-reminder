@@ -36,4 +36,23 @@ class JobTransactionRepositoryImpl extends DBConfig with JobTransactionRepositor
     ???
   }
 
+  /**
+    * TODO
+    * @param transactionEntity
+    * @return
+    */
+  def update(transactionEntity: JobTransactionEntity): EitherT[Future, Throwable, JobTransactionEntity] = {
+    Try {
+      this.run(quote {
+        transactions.filter(u => u.id == lift(transactionEntity.id)).update(lift(transactionEntity))
+      })
+    } match {
+      case Success(_) =>
+        EitherT.right[Throwable](Future {transactionEntity})
+
+      case Failure(exception) =>
+        EitherT.left[JobTransactionEntity](Future.successful(exception))
+    }
+  }
+
 }
