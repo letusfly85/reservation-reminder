@@ -9,4 +9,6 @@ class JobTransactionService(jobTransactionRepository: JobTransactionRepository) 
 
   def searchByStatus(statusName: String): Future[List[JobTransactionEntity]] = jobTransactionRepository.findByStatus(statusName)
 
+  def create(entity: JobTransactionEntity) = jobTransactionRepository.create(entity)
+
 }
