@@ -6,17 +6,17 @@ import io.wonder.soft.reser.application.services.ReserveService
 import io.circe.generic.auto._
 import io.circe.syntax._
 import akka.http.scaladsl.model.StatusCodes
-import cats.data.{EitherT, OptionT}
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
-import io.wonder.soft.reser.domain.entity.{NotFoundExceptionEntity, ReserveEntity}
+import io.wonder.soft.reser.domain.entity.{ErrorResponseEntity, ReserveEntity}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration._
 import scala.util.{Failure, Success, Try}
 
 class ReserveRoute(reserveService: ReserveService)(implicit executionContext: ExecutionContext) extends FailFastCirceSupport {
+  val prefix = "reserves"
 
-  val route = pathPrefix("reserves") {
+  val route = pathPrefix(prefix) {
     parameters('userId) { userId =>
       get {
         val futureReserves = reserveService.searchByUserId(userId)
@@ -43,18 +43,25 @@ class ReserveRoute(reserveService: ReserveService)(implicit executionContext: Ex
             }
           case Failure(ex) => complete("ok")
         }
+      }
 
-      } ~ post {
-        val entity = ReserveEntity(id = id.toInt, reservedUserId = "1", name = "test")
-        val newValue = reserveService.updateT(entity).value
+    } ~ post {
+      entity(as[ReserveEntity]) { reserveEntity =>
+        val newValue = reserveService.updateT(reserveEntity).value
 
         val reserveJson = newValue.map { reserveEntities =>
           reserveEntities match {
-            case Right(entity) =>
-              entity.asJson
+            case Right(entity) => {
+              StatusCodes.OK -> entity.asJson
+            }
 
-            case Left(throwable) =>
-              Map("" -> "").asJson
+            case Left(ex) => {
+              StatusCodes.NotFound ->
+                ErrorResponseEntity.NotFoundEntity(
+                  path = prefix, method = "POST",
+                  message = ex.getMessage, targetResource = ""
+                ).asJson
+            }
           }
         }
         completeOrRecoverWith(reserveJson) { extraction =>
