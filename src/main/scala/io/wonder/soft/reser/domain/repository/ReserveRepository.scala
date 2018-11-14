@@ -13,7 +13,9 @@ trait ReserveRepository {
 
   def searchByUserId(userId: String): Future[List[ReserveEntity]]
 
-  def updateT(reserveEntity: ReserveEntity): EitherT[Future, Throwable, ReserveEntity]
+  def update(reserveEntity: ReserveEntity): EitherT[Future, Throwable, ReserveEntity]
+
+  def create(reserveEntity: ReserveEntity): EitherT[Future, Throwable, ReserveEntity]
 
   def destroyT(id: Int): EitherT[Future, Throwable, ReserveEntity]
 

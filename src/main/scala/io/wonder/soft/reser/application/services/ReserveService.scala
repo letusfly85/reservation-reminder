@@ -11,6 +11,8 @@ class ReserveService(reserveRepository: ReserveRepository) {
 
   def searchByUserId(userId: String): Future[List[ReserveEntity]] = reserveRepository.searchByUserId(userId)
 
-  def updateT(reserveEntity: ReserveEntity)= reserveRepository.updateT(reserveEntity)
+  def create(reserveEntity: ReserveEntity)= reserveRepository.create(reserveEntity)
+
+  def update(reserveEntity: ReserveEntity)= reserveRepository.update(reserveEntity)
 
 }

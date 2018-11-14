@@ -45,9 +45,32 @@ class ReserveRoute(reserveService: ReserveService)(implicit executionContext: Ex
         }
       }
 
+    } ~ put {
+      entity(as[ReserveEntity]) { reserveEntity =>
+        val newValue = reserveService.update(reserveEntity).value
+
+        val reserveJson = newValue.map { reserveEntities =>
+          reserveEntities match {
+            case Right(entity) => {
+              StatusCodes.OK -> entity.asJson
+            }
+
+            case Left(ex) => {
+              StatusCodes.NotFound ->
+                ErrorResponseEntity.NotFoundEntity(
+                  path = prefix, method = "PUT",
+                  message = ex.getMessage, targetResource = ""
+                ).asJson
+            }
+          }
+        }
+        completeOrRecoverWith(reserveJson) { extraction =>
+          failWith(extraction)
+        }
+      }
     } ~ post {
       entity(as[ReserveEntity]) { reserveEntity =>
-        val newValue = reserveService.updateT(reserveEntity).value
+        val newValue = reserveService.create(reserveEntity).value
 
         val reserveJson = newValue.map { reserveEntities =>
           reserveEntities match {

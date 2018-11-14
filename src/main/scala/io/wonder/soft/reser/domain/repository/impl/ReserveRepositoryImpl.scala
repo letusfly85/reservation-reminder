@@ -47,8 +47,22 @@ class ReserveRepositoryImpl extends DBConfig with ReserveRepository {
     })
   }
 
+  def create(reserveEntity: ReserveEntity): EitherT[Future, Throwable, ReserveEntity] = {
+    Try {
+      this.run(quote {
+        query[ReserveEntity].insert(lift(reserveEntity))
+      })
+    } match {
+      case Success(_) =>
+        EitherT.right[Throwable](Future {reserveEntity})
 
-  def updateT(reserveEntity: ReserveEntity): EitherT[Future, Throwable, ReserveEntity] = {
+      case Failure(exception) =>
+        EitherT.left[ReserveEntity](Future.successful(exception))
+    }
+  }
+
+
+  def update(reserveEntity: ReserveEntity): EitherT[Future, Throwable, ReserveEntity] = {
     Try {
       this.run(quote {
         reserves.filter(u => u.id == lift(reserveEntity.id)).update(lift(reserveEntity))
