@@ -34,7 +34,8 @@ libraryDependencies ++= {
     "de.heikoseeberger" %% "akka-http-circe" % "1.21.0",
     "com.softwaremill.macwire" %% "macros" % macwireV,
     "org.typelevel" %% "cats-core" % "1.2.0",
-    "org.quartz-scheduler" % "quartz" % "2.3.0"
+    "org.quartz-scheduler" % "quartz" % "2.3.0",
+    "com.spotify" % "docker-client" % "8.14.4"
   )
 }
 
