@@ -10,7 +10,6 @@ import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
 import io.wonder.soft.reser.domain.entity.{ErrorResponseEntity, ReserveEntity}
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.concurrent.duration._
 import scala.util.{Failure, Success, Try}
 
 class ReserveRoute(reserveService: ReserveService)(implicit executionContext: ExecutionContext) extends FailFastCirceSupport {
