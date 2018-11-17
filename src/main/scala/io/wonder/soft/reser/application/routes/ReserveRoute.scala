@@ -1,18 +1,34 @@
 package io.wonder.soft.reser.application.routes
 
 
-import akka.http.scaladsl.server.Directives._
-import io.wonder.soft.reser.application.services.ReserveService
 import io.circe.generic.auto._
+import io.circe.Decoder
 import io.circe.syntax._
-import akka.http.scaladsl.model.StatusCodes
+import io.circe.{Encoder, Json}
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport
-import io.wonder.soft.reser.domain.entity.{ErrorResponseEntity, ReserveEntity}
 
+import akka.actor.ActorSystem
+import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.model.StatusCodes
+import akka.stream.Materializer
+
+import org.joda.time.DateTime
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 
-class ReserveRoute(reserveService: ReserveService)(implicit executionContext: ExecutionContext) extends FailFastCirceSupport {
+import io.wonder.soft.reser.application.services.ReserveService
+import io.wonder.soft.reser.domain.entity.{ErrorResponseEntity, ReserveEntity}
+
+class ReserveRoute(reserveService: ReserveService)
+                  (implicit executionContext: ExecutionContext, system: ActorSystem, materializer: Materializer)
+  extends FailFastCirceSupport {
+  import ReserveEntity._
+
+  implicit val localDateEncoder = new Encoder[DateTime] {
+    final def apply(a: DateTime): Json =
+      Json.fromString(a.toString("yyyy-MM-dd'T'HH:mm:ss"))
+  }
+
   val prefix = "reserves"
 
   val route = pathPrefix(prefix) {
@@ -55,7 +71,7 @@ class ReserveRoute(reserveService: ReserveService)(implicit executionContext: Ex
             }
 
             case Left(ex) => {
-              StatusCodes.NotFound ->
+              StatusCodes.InternalServerError ->
                 ErrorResponseEntity.NotFoundEntity(
                   path = prefix, method = "PUT",
                   message = ex.getMessage, targetResource = ""
@@ -78,7 +94,7 @@ class ReserveRoute(reserveService: ReserveService)(implicit executionContext: Ex
             }
 
             case Left(ex) => {
-              StatusCodes.NotFound ->
+              StatusCodes.InternalServerError ->
                 ErrorResponseEntity.NotFoundEntity(
                   path = prefix, method = "POST",
                   message = ex.getMessage, targetResource = ""

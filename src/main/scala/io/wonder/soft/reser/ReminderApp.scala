@@ -3,19 +3,13 @@ package io.wonder.soft.reser
 import java.util.Date
 
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
-import akka.actor.{ActorRef, ActorSystem, Props}
+import akka.actor.ActorSystem
 import akka.event.{Logging, LoggingAdapter}
-import akka.http.scaladsl.model.HttpMethods._
-import akka.http.scaladsl.model.ContentTypes._
 import akka.stream.{ActorMaterializer, Materializer}
-import akka.util.ByteString
 import com.typesafe.config.{Config, ConfigFactory}
 import io.wonder.soft.reser.application.routes.ReserveRoute
-import io.wonder.soft.reser.application.services.ReserveService
 import io.wonder.soft.reser.domain.job.{SimpleJobExecutor, SimpleJobGenerator}
-import io.wonder.soft.reser.domain.repository.impl.ReserveRepositoryImpl
 
 import scala.concurrent.ExecutionContextExecutor
 
