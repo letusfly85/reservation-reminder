@@ -17,8 +17,17 @@ class ReserveRepositoryImpl extends DBConfig with ReserveRepository {
   import scala.concurrent.ExecutionContext.Implicits.global
 
   val reserves = quote {
-    //TODO map other columns
-    querySchema[ReserveEntity]("reserves", _.reservedUserId -> "reserved_user_id")
+    querySchema[ReserveEntity]("reserves",
+      _.reservedUserId -> "reserved_user_id",
+      _.jobId -> "job_id",
+      _.jobStatus -> "job_status",
+      _.executedAt -> "executed_at",
+      _.name -> "name",
+      _.description -> "description",
+      _.reservedFrom -> "reserved_from",
+      _.reservedTo -> "reserved_to",
+      _.canceledAt -> "canceled_at"
+    )
   }
 
   def findT(id: Int): OptionT[Future, ReserveEntity] = {
