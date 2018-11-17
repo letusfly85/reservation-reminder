@@ -17,6 +17,7 @@ class ReserveRepositoryImpl extends DBConfig with ReserveRepository {
   import scala.concurrent.ExecutionContext.Implicits.global
 
   val reserves = quote {
+    //TODO map other columns
     querySchema[ReserveEntity]("reserves", _.reservedUserId -> "reserved_user_id")
   }
 
@@ -50,7 +51,7 @@ class ReserveRepositoryImpl extends DBConfig with ReserveRepository {
   def create(reserveEntity: ReserveEntity): EitherT[Future, Throwable, ReserveEntity] = {
     Try {
       this.run(quote {
-        query[ReserveEntity].insert(lift(reserveEntity))
+        reserves.insert(lift(reserveEntity))
       })
     } match {
       case Success(_) =>
