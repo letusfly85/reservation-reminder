@@ -68,7 +68,29 @@ class ReserveRepositoryImpl extends DBConfig with ReserveRepository {
       }
       //TODO handle auto increment key to be Null
       this.run(quote {
-        reserves.insert(lift(newEntity))
+        querySchema[ReserveEntity](
+          "reserves",
+          _.reservedUserId -> "reserved_user_id",
+          _.jobId -> "job_id",
+          _.jobStatus -> "job_status",
+          _.executedAt -> "executed_at",
+          _.name -> "name",
+          _.description -> "description",
+          _.reservedFrom -> "reserved_from",
+          _.reservedTo -> "reserved_to",
+          _.canceledAt -> "canceled_at"
+        ).insert(
+          _.reservedUserId -> lift(newEntity.reservedUserId),
+          _.jobId -> lift(newEntity.jobId),
+          _.jobStatus -> lift(newEntity.jobStatus),
+          _.executedAt -> lift(newEntity.executedAt),
+          _.name -> lift(newEntity.name),
+          _.description -> lift(newEntity.description),
+          _.reservedFrom -> lift(newEntity.reservedFrom),
+          _.reservedTo -> lift(newEntity.reservedTo),
+          _.canceledAt -> lift(newEntity.canceledAt)
+        )
+        // reserves.insert(lift(newEntity))
       })
     } match {
       case Success(_) =>
