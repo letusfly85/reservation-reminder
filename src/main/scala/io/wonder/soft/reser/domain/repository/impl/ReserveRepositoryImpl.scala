@@ -1,5 +1,7 @@
 package io.wonder.soft.reser.domain.repository.impl
 
+import java.util.UUID
+
 import cats.data._
 import cats.implicits._
 import io.wonder.soft.reser.infra.DBConfig
@@ -59,8 +61,14 @@ class ReserveRepositoryImpl extends DBConfig with ReserveRepository {
 
   def create(reserveEntity: ReserveEntity): EitherT[Future, Throwable, ReserveEntity] = {
     Try {
+      val newEntity =
+      reserveEntity.jobId match {
+        case None => reserveEntity.copy(jobId = Some(UUID.randomUUID().toString))
+        case _ => reserveEntity
+      }
+      //TODO handle auto increment key to be Null
       this.run(quote {
-        reserves.insert(lift(reserveEntity))
+        reserves.insert(lift(newEntity))
       })
     } match {
       case Success(_) =>

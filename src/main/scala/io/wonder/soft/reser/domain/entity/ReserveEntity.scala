@@ -13,7 +13,7 @@ final case class ReserveEntity
   reservedFrom: DateTime,
   reservedTo: DateTime,
   jobId: Option[String] = None,
-  jobStatus: Option[String] = None,
+  jobStatus: Option[String] = Some("PENDING"),
   executedAt: Option[DateTime] = None,
   canceledAt: Option[DateTime] = None
 ) {
