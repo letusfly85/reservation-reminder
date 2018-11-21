@@ -66,20 +66,8 @@ class ReserveRepositoryImpl extends DBConfig with ReserveRepository {
         case None => reserveEntity.copy(jobId = Some(UUID.randomUUID().toString))
         case _ => reserveEntity
       }
-      //TODO handle auto increment key to be Null
       this.run(quote {
-        querySchema[ReserveEntity](
-          "reserves",
-          _.reservedUserId -> "reserved_user_id",
-          _.jobId -> "job_id",
-          _.jobStatus -> "job_status",
-          _.executedAt -> "executed_at",
-          _.name -> "name",
-          _.description -> "description",
-          _.reservedFrom -> "reserved_from",
-          _.reservedTo -> "reserved_to",
-          _.canceledAt -> "canceled_at"
-        ).insert(
+        reserves.insert(
           _.reservedUserId -> lift(newEntity.reservedUserId),
           _.jobId -> lift(newEntity.jobId),
           _.jobStatus -> lift(newEntity.jobStatus),
@@ -90,7 +78,6 @@ class ReserveRepositoryImpl extends DBConfig with ReserveRepository {
           _.reservedTo -> lift(newEntity.reservedTo),
           _.canceledAt -> lift(newEntity.canceledAt)
         )
-        // reserves.insert(lift(newEntity))
       })
     } match {
       case Success(_) =>
