@@ -3,6 +3,8 @@ package io.wonder.soft.reser.infra
 import com.spotify.docker.client.DefaultDockerClient
 import java.net.URI
 
+import akka.actor.ActorRef
+
 /**
   *
   *
@@ -18,6 +20,27 @@ class DockerService {
       .build
 
     docker
+  }
+
+  /**
+    *
+    * @param handler
+    */
+  def pullImage(handler: ActorRef) = {
+  }
+
+  /**
+    *
+    * @param handler
+    */
+  def pushImage(handler: ActorRef) = {
+  }
+
+  /**
+    *
+    * @param handler
+    */
+  def runContainer(handler: ActorRef) = {
   }
 
 }
