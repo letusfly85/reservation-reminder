@@ -38,9 +38,16 @@ class DockerService {
 
   /**
     *
-    * @param handler
+    * @param imageName
+    * @param actorRef
+    * @param host
+    * @param port
     */
-  def pushImage(handler: ActorRef) = {
+  def pushImage(imageName: String, actorRef: ActorRef, host: String, port: Int) = {
+    val client = this.generateClient(host, port)
+    val progressHandler = new DockerEventProgressHandler(actorRef)
+
+    client.push(imageName, progressHandler)
   }
 
   /**
