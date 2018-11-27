@@ -4,12 +4,13 @@ import java.util.Date
 
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives._
-import akka.actor.ActorSystem
+import akka.actor.{ActorSystem, Props}
 import akka.event.{Logging, LoggingAdapter}
 import akka.stream.{ActorMaterializer, Materializer}
 import com.typesafe.config.{Config, ConfigFactory}
 import io.wonder.soft.reser.application.routes.ReserveRoute
 import io.wonder.soft.reser.domain.job.{SimpleJobExecutor, SimpleJobGenerator}
+import io.wonder.soft.reser.infra.{DockerService, ProgressHandleActor}
 
 import scala.concurrent.ExecutionContextExecutor
 
@@ -27,10 +28,17 @@ trait ReminderApp extends AppModule {
   val routes =
     path("api" / "v1" / "status") {
       (get | post) {
+        /*
         val job = SimpleJobGenerator.generateJob("test", "test", "echo hello")
         val trigger = SimpleJobGenerator.generateTrigger("test", "test", new Date(), 3, 1)
 
         SimpleJobExecutor.startSchedule(job, trigger)
+        */
+        val dockerService = new DockerService()
+        dockerService.generateClient()
+
+        val actor = system.actorOf(Props[ProgressHandleActor])
+        dockerService.pullImage("nginx", actor)
 
         complete("alive")
       }

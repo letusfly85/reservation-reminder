@@ -2,7 +2,6 @@ package io.wonder.soft.reser.application.routes
 
 
 import io.circe.generic.auto._
-import io.circe.Decoder
 import io.circe.syntax._
 import io.circe.{Encoder, Json}
 import de.heikoseeberger.akkahttpcirce.FailFastCirceSupport

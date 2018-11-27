@@ -12,13 +12,16 @@ import akka.actor.ActorRef
   */
 class DockerService {
 
-  def generateClient(host: String, port: Int) = {
+  private var client: DefaultDockerClient = _
+
+  def generateClient(host: String = "localhost", port: Int = 2375) = {
     val docker = DefaultDockerClient
       .builder
       .uri(URI.create(s"http://${host}:${port}"))
       // .dockerCertificates(new DockerCertificates(Paths.get("/Users/rohan/.docker/boot2docker-vm/")))
       .build
 
+    this.client = docker
     docker
   }
 
@@ -26,28 +29,22 @@ class DockerService {
     *
     * @param imageName
     * @param actorRef
-    * @param host
-    * @param port
     */
-  def pullImage(imageName: String, actorRef: ActorRef, host: String, port: Int) = {
-    val client = this.generateClient(host, port)
+  def pullImage(imageName: String, actorRef: ActorRef) = {
     val progressHandler = new DockerEventProgressHandler(actorRef)
 
-    client.pull(imageName, progressHandler)
+    this.client.pull(imageName, progressHandler)
   }
 
   /**
     *
     * @param imageName
     * @param actorRef
-    * @param host
-    * @param port
     */
-  def pushImage(imageName: String, actorRef: ActorRef, host: String, port: Int) = {
-    val client = this.generateClient(host, port)
+  def pushImage(imageName: String, actorRef: ActorRef) = {
     val progressHandler = new DockerEventProgressHandler(actorRef)
 
-    client.push(imageName, progressHandler)
+    this.client.push(imageName, progressHandler)
   }
 
   /**
