@@ -10,7 +10,7 @@ import akka.stream.{ActorMaterializer, Materializer}
 import com.typesafe.config.{Config, ConfigFactory}
 import io.wonder.soft.reser.application.routes.ReserveRoute
 import io.wonder.soft.reser.domain.job.{SimpleJobExecutor, SimpleJobGenerator}
-import io.wonder.soft.reser.infra.{DockerService, ProgressHandleActor}
+import io.wonder.soft.reser.infra.{DockerManageActor, DockerService, ProgressHandleActor}
 
 import scala.concurrent.ExecutionContextExecutor
 
@@ -34,11 +34,8 @@ trait ReminderApp extends AppModule {
 
         SimpleJobExecutor.startSchedule(job, trigger)
         */
-        val dockerService = new DockerService()
-        dockerService.generateClient()
-
-        val actor = system.actorOf(Props[ProgressHandleActor])
-        dockerService.pullImage("nginx", actor)
+        val actor = system.actorOf(Props[DockerManageActor])
+        actor ! ('pull, "nginx")
 
         complete("alive")
       }
