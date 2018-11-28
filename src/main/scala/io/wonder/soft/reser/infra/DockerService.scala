@@ -14,7 +14,7 @@ class DockerService {
 
   private var client: DefaultDockerClient = _
 
-  def generateClient(host: String = "localhost", port: Int = 2375) = {
+  def generateClient(host: String = "0.0.0.0", port: Int = 2376) = {
     val docker = DefaultDockerClient
       .builder
       .uri(URI.create(s"http://${host}:${port}"))
