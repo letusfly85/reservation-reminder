@@ -67,7 +67,8 @@ class DockerService {
     *
     * @param handler
     */
-  def runContainer(handler: ActorRef) = {
+  def runContainer(imageName: String, command: String, options: Map[String, String], actorRef: ActorRef) = {
+    ???
   }
 
 }
