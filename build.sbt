@@ -9,9 +9,9 @@ scalaVersion := "2.12.7"
 lazy val `reser` = (project in file("."))
 
 libraryDependencies ++= {
-  val akkaV       = "2.5.17"
+  val akkaV       = "2.5.18"
   val akkaHttpV   = "10.1.5"
-  val quillV = "2.5.4"
+  val quillV = "2.6.0"
   val circeV = "0.9.3"
   val macwireV = "2.3.1"
   Seq(
