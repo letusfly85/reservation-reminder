@@ -4,6 +4,7 @@ import com.spotify.docker.client.DefaultDockerClient
 import java.net.URI
 
 import akka.actor.ActorRef
+import com.spotify.docker.client.messages.ContainerConfig
 
 /**
   *
@@ -68,7 +69,10 @@ class DockerService {
     * @param handler
     */
   def runContainer(imageName: String, command: String, options: Map[String, String], actorRef: ActorRef) = {
-    ???
+    val containerConfig = ContainerConfig.builder().image(imageName).cmd(command).build()
+
+    val result = this.client.createContainer(containerConfig)
+    result.id()
   }
 
 }
