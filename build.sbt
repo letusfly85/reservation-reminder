@@ -4,7 +4,7 @@ version := "1.0.0-SNAPSHOT"
 
 name := "reserve-reminder"
 
-scalaVersion := "2.12.7"
+scalaVersion := "2.12.8"
 
 lazy val `reser` = (project in file("."))
 
