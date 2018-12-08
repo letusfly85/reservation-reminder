@@ -1,6 +1,5 @@
 package io.wonder.soft.reser.domain.repository.impl
 
-import java.util.UUID
 
 import cats.data._
 import cats.implicits._
@@ -21,11 +20,10 @@ class ReserveRepositoryImpl extends DBConfig with ReserveRepository {
   val reserves = quote {
     querySchema[ReserveEntity]("reserves",
       _.reservedUserId -> "reserved_user_id",
-      _.jobId -> "job_id",
-      _.jobStatus -> "job_status",
       _.executedAt -> "executed_at",
       _.name -> "name",
       _.description -> "description",
+      _.command  -> "command",
       _.reservedFrom -> "reserved_from",
       _.reservedTo -> "reserved_to",
       _.canceledAt -> "canceled_at"
@@ -61,19 +59,14 @@ class ReserveRepositoryImpl extends DBConfig with ReserveRepository {
 
   def create(reserveEntity: ReserveEntity): EitherT[Future, Throwable, ReserveEntity] = {
     Try {
-      val newEntity =
-      reserveEntity.jobId match {
-        case None => reserveEntity.copy(jobId = Some(UUID.randomUUID().toString))
-        case _ => reserveEntity
-      }
+      val newEntity = reserveEntity
       this.run(quote {
         reserves.insert(
           _.reservedUserId -> lift(newEntity.reservedUserId),
-          _.jobId -> lift(newEntity.jobId),
-          _.jobStatus -> lift(newEntity.jobStatus),
           _.executedAt -> lift(newEntity.executedAt),
           _.name -> lift(newEntity.name),
           _.description -> lift(newEntity.description),
+          _.command -> lift(newEntity.command),
           _.reservedFrom -> lift(newEntity.reservedFrom),
           _.reservedTo -> lift(newEntity.reservedTo),
           _.canceledAt -> lift(newEntity.canceledAt)

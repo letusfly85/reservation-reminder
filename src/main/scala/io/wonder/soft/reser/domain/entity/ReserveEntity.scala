@@ -10,10 +10,9 @@ final case class ReserveEntity
   reservedUserId: String,
   name: String,
   description: Option[String] = None,
+  command: Option[String] = None,
   reservedFrom: DateTime,
   reservedTo: DateTime,
-  jobId: Option[String] = None,
-  jobStatus: Option[String] = Some("PENDING"),
   executedAt: Option[DateTime] = None,
   canceledAt: Option[DateTime] = None
 ) {
@@ -31,15 +30,14 @@ object ReserveEntity {
     override def apply(c: HCursor): Result[DateTime] = Decoder.decodeString.map(s => new DateTime(s)).apply(c)
   }
 
-  implicit def encodeReserve: Encoder[ReserveEntity] = Encoder.forProduct10(
+  implicit def encodeReserve: Encoder[ReserveEntity] = Encoder.forProduct9(
     "id",
     "reserved_user_id",
     "name",
     "description",
+    "command",
     "reserved_from",
     "reserved_to",
-    "job_id",
-    "job_status",
     "executed_at",
     "canceled_at"
   )(reserveEntity => (
@@ -47,34 +45,32 @@ object ReserveEntity {
     reserveEntity.reservedUserId,
     reserveEntity.name,
     reserveEntity.description,
+    reserveEntity.command,
     reserveEntity.reservedFrom,
     reserveEntity.reservedTo,
-    reserveEntity.jobId,
-    reserveEntity.jobStatus,
     reserveEntity.executedAt,
     reserveEntity.canceledAt
   ))
 
-  implicit val decodeReserve: Decoder[ReserveEntity] = Decoder.forProduct10(
+  implicit val decodeReserve: Decoder[ReserveEntity] = Decoder.forProduct9(
     "id",
     "reserved_user_id",
     "name",
     "description",
+    "command",
     "reserved_from",
     "reserved_to",
-    "job_id",
-    "job_status",
     "executed_at",
     "canceled_at"
-  )((id: Int, reservedUserId: String, name: String, description: Option[String],
+  )((id: Int, reservedUserId: String, name: String, description: Option[String], command: Option[String],
      reservedFrom: DateTime, reservedTo: DateTime,
-     jobId: Option[String], jobStatus: Option[String],
      executedAt: Option[DateTime],
      canceldAt: Option[DateTime]) => {
     new ReserveEntity(
       id = id,
       reservedUserId = reservedUserId.toString,
       name = name.toString,
+      command = command,
       reservedFrom = new DateTime(),
       reservedTo = new DateTime()
     )

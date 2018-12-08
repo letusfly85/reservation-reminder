@@ -32,8 +32,7 @@ class JobTransactionService
       val reservedId = transaction.reserveId
       reserveRepository.find(reservedId) match {
         case Some(reserveEntity) =>
-          // val command = reserveEntity.command
-          val command = s"echo ${reserveEntity.description}"
+          val command = reserveEntity.command.getOrElse(s"echo ${reserveEntity.name}")
           val job = SimpleJobGenerator.generateJob(reserveEntity.name, "test", command)
           val trigger = SimpleJobGenerator.generateTrigger(reserveEntity.name, "test", new Date(), 1, 0)
 
