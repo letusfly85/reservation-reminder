@@ -45,6 +45,7 @@ trait ReminderApp extends AppModule {
 
 }
 
+//FIXME remove warning of 'ReminderApp has a main method with parameter type Array[String], but...'
 object ReminderApp extends App with ReminderApp {
   override implicit val system: ActorSystem = ActorSystem("reservation-reminder")
   override implicit val executor: ExecutionContextExecutor = system.dispatcher

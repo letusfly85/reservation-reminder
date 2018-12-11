@@ -37,6 +37,9 @@ class JobTransactionService
           val trigger = SimpleJobGenerator.generateTrigger(reserveEntity.name, "test", new Date(), 1, 0)
 
           SimpleJobExecutor.startSchedule(job, trigger)
+
+        case None =>
+          //TODO add logging
       }
 
     }
