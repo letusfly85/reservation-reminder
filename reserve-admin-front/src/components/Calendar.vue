@@ -1,30 +1,32 @@
 <template>
- <div></div>
+ <div id="calendar" ref="calendar"></div>
 </template>
 
 <script>
-// import * as moment from 'moment'
-import * as jQuery from 'jquery'
+import moment from 'moment'
 import 'fullcalendar'
+import 'fullcalendar/dist/fullcalendar.css'
+import $ from 'jquery'
 
 export default {
   name: 'Calendar',
-  data() {
+  data () {
     return {
-      element: {}
+      element: {},
+      events: []
     }
   },
   methods: {
     onSelectFunction: function (start, end) {
-      console.log(start, end);
+      console.log(start, end)
       const eventTitle = prompt('何の日？')
       if (eventTitle) {
         const eventData = {
           start: start,
           end: end,
           title: eventTitle
-        };
-        console.log(eventData);
+        }
+        console.log(eventData)
         this.element.fullCalendar('renderEvent', eventData)
       }
       this.element.fullCalendar('unselect')
@@ -49,29 +51,32 @@ export default {
     }
   },
   created: function () {
-    this.element = jQuery('#calendar')
   },
-  mounted: function () {
+  mounted () {
+    this.element = $(this.$refs.calendar)
     const calendarOptions = {
       header: {
-        left: 'prev,next today',
+        left: 'prev next today',
         center: 'title',
-        right: 'month,agendaWeek,agendaDay'
+        right: 'month agendaWeek agendaDay'
       },
-      // allDayText: '終日',
+      height: 'auto',
+      allDayText: '終日',
       defaultView: 'month',
-      // slotDuration: moment.duration(15, 'minutes'),
-      slotLabelFormat: 'H:mm',
+      slotDuration: moment.duration(15, 'minutes'),
+      slotLabelFormat: 'HH:mm',
       businessHours: true,
       eventLimit: true,
       buttonText: {
         day: '今日',
         week: '今週',
-        month: '今月',
+        month: '今月'
       },
       monthNames: ['１月', '２月', '３月', '４月', '５月', '６月', '７月', '８月', '９月', '１０月', '１１月', '１２月'],
       dayNames: ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'],
       dayNamesShort: ['日', '月', '火', '水', '木', '金', '土'],
+      aspectRatio: 2,
+      timeFormat: 'HH:mm',
       views: {
         month: {
           columnFormat: 'ddd'
@@ -93,7 +98,9 @@ export default {
       eventResize: this.onReSizeFunction,
       eventRender: this.addEventRender,
       updateRenderer: this.onUpdateEventData,
-      editable: true
+      editable: true,
+      droppable: true,
+      events: this.events
     }
     this.element.fullCalendar(calendarOptions)
   },
@@ -104,13 +111,9 @@ export default {
   },
   addEventRender: function (event, element) {
     element.bind('dblclick', () => {
-      alert('onDoubleClickEbent')
+      alert('onDoubleClickEvent')
       console.log(event)
     })
   }
 }
 </script>
-
-<style scoped>
-
-</style>
