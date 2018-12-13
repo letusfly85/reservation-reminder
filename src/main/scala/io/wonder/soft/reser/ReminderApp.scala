@@ -1,7 +1,5 @@
 package io.wonder.soft.reser
 
-import java.util.Date
-
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives._
 import akka.actor.{ActorSystem, Props}
