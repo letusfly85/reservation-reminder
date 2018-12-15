@@ -1,11 +1,18 @@
 <template>
- <div id="calendar" ref="calendar"></div>
+ <div id="calendar" ref="calendar" style="width: 80%; margin-left: 10%; margin-top: 2rem;">
+   <!--
+    https://fullcalendar.io/docs/bootstrapFontAwesome
+    https://fontawesome.com/start
+   -->
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+ </div>
 </template>
 
 <script>
 import moment from 'moment'
-import 'fullcalendar'
+import 'fullcalendar/dist/fullcalendar'
 import 'fullcalendar/dist/fullcalendar.css'
+import 'bootswatch/dist/flatly/bootstrap.css'
 import $ from 'jquery'
 
 export default {
@@ -19,7 +26,7 @@ export default {
   methods: {
     onSelectFunction: function (start, end) {
       console.log(start, end)
-      const eventTitle = prompt('何の日？')
+      const eventTitle = prompt('予定を追加')
       if (eventTitle) {
         const eventData = {
           start: start,
@@ -55,24 +62,36 @@ export default {
   mounted () {
     this.element = $(this.$refs.calendar)
     const calendarOptions = {
+      themeSystem: 'bootstrap4',
       header: {
         left: 'prev next today',
         center: 'title',
-        right: 'month agendaWeek agendaDay'
+        right: 'month agendaWeek agendaDay listWeek'
       },
-      height: 'auto',
+      // https://stackoverflow.com/questions/26458108/fullcalendar-v2-how-to-maintain-the-same-scroll-time-when-navigating-weeks
+      // height: 'auto',
+      scrollTime: '09:00:00',
       allDayText: '終日',
       defaultView: 'month',
       slotDuration: moment.duration(15, 'minutes'),
       slotLabelFormat: 'HH:mm',
       businessHours: true,
       eventLimit: true,
+      buttonIcons: {
+        close: 'fa-times',
+        prev: 'fa-chevron-left',
+        next: 'fa-chevron-right',
+        prevYear: 'fa-angle-double-left',
+        nextYear: 'fa-angle-double-right'
+      },
       buttonText: {
         day: '今日',
         week: '今週',
         month: '今月'
+        // prev: '前へ',
+        // next: '次へ'
       },
-      monthNames: ['１月', '２月', '３月', '４月', '５月', '６月', '７月', '８月', '９月', '１０月', '１１月', '１２月'],
+      monthNames: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
       dayNames: ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'],
       dayNamesShort: ['日', '月', '火', '水', '木', '金', '土'],
       aspectRatio: 2,
@@ -117,3 +136,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  html, body {
+    font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+  }
+</style>
