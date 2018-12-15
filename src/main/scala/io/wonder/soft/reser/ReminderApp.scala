@@ -52,6 +52,6 @@ object ReminderApp extends App with ReminderApp {
   override val config = ConfigFactory.load()
   override val logger = Logging(system, getClass)
 
-  Http().bindAndHandle(routes, "0.0.0.0", 8080)
+  Http().bindAndHandle(routes, "0.0.0.0", 8081)
 }
 
