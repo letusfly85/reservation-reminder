@@ -55,6 +55,15 @@ export default {
       console.log('dropping')
       console.log(event)
       this.element.fullCalendar('unselect')
+    },
+    eventClickHandler: function (event) {
+      let title = prompt('予定を入力してください:', event.title)
+      if (title && title !== '') {
+        event.title = title
+        this.element.fullCalendar('updateEvent', event) // イベント（予定）の修正
+      } else {
+        this.element.fullCalendar('removeEvent', event.id) // イベント（予定）の削除
+      }
     }
   },
   created: function () {
@@ -117,6 +126,7 @@ export default {
       eventResize: this.onReSizeFunction,
       eventRender: this.addEventRender,
       updateRenderer: this.onUpdateEventData,
+      eventClick: this.eventClickHandler,
       editable: true,
       droppable: true,
       events: this.events
