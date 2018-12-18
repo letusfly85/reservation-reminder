@@ -26,12 +26,6 @@ trait ReminderApp extends AppModule {
   val routes =
     path("api" / "v1" / "status") {
       (get | post) {
-        /*
-        val job = SimpleJobGenerator.generateJob("test", "test", "echo hello")
-        val trigger = SimpleJobGenerator.generateTrigger("test", "test", new Date(), 3, 1)
-
-        SimpleJobExecutor.startSchedule(job, trigger)
-        */
         val actor = system.actorOf(Props[DockerManageActor])
         actor ! ('pull, "nginx")
 
