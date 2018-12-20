@@ -1,5 +1,20 @@
 <template>
  <div id="calendar" ref="calendar" style="width: 80%; margin-left: 10%; margin-top: 2rem;">
+   <div ref="eventModal" class="modal fade" style="width: 1500px;">
+     <div class="modal-dialog modal-lg">
+       <div class="modal-content">
+         <div class="modal-header">
+           <div class="modal-body">
+             {{ currentEvent }}
+           </div>
+         </div>
+         <div class="modal-footer">
+           <button type="button" class="btn btn-primary">Save changes</button>
+           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>
+       </div>
+     </div>
+   </div>
    <!--
     https://fullcalendar.io/docs/bootstrapFontAwesome
     https://fontawesome.com/start
@@ -13,6 +28,7 @@ import moment from 'moment'
 import 'fullcalendar/dist/fullcalendar'
 import 'fullcalendar/dist/fullcalendar.css'
 import 'bootswatch/dist/flatly/bootstrap.css'
+import 'bootstrap/dist/js/bootstrap'
 import $ from 'jquery'
 
 export default {
@@ -20,13 +36,17 @@ export default {
   data () {
     return {
       element: {},
-      events: []
+      events: [],
+      currentEvent: {}
     }
   },
   methods: {
     onSelectFunction: function (start, end) {
       console.log(start, end)
       const eventTitle = prompt('予定を追加')
+      const modalDom = $(this.$refs.eventModal)
+      this.currentEvent = { start: start, end: end, title: eventTitle }
+      modalDom.modal('show')
       if (eventTitle) {
         const eventData = {
           start: start,
