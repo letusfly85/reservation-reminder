@@ -5,11 +5,14 @@
        <div class="modal-content">
          <div class="modal-header">
            <div class="modal-body">
-             {{ currentEvent }}
+             <label for="eventTitle">title</label>
+             <input type="text" class="input-group" id="eventTitle" v-model="form.title">
+             <label for="eventDescription">description</label>
+             <textarea class="input-group" id="eventDescription" v-model="form.description" />
            </div>
          </div>
          <div class="modal-footer">
-           <button type="button" class="btn btn-primary">Save changes</button>
+           <button type="button" class="btn btn-primary" v-on:click="updateCalenderEvent">Save changes</button>
            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
          </div>
        </div>
@@ -37,26 +40,33 @@ export default {
     return {
       element: {},
       events: [],
-      currentEvent: {}
+      form: {
+        title: '',
+        description: '',
+        start: '',
+        end: ''
+      }
     }
   },
   methods: {
-    onSelectFunction: function (start, end) {
-      console.log(start, end)
-      const eventTitle = prompt('予定を追加')
-      const modalDom = $(this.$refs.eventModal)
-      this.currentEvent = { start: start, end: end, title: eventTitle }
-      modalDom.modal('show')
-      if (eventTitle) {
-        const eventData = {
-          start: start,
-          end: end,
-          title: eventTitle
-        }
-        console.log(eventData)
-        this.element.fullCalendar('renderEvent', eventData)
+    updateCalenderEvent: function () {
+      console.log(this.form)
+      const eventData = {
+        start: this.form.start,
+        end: this.form.end,
+        title: this.form.title
       }
+      console.log(eventData)
+      this.element.fullCalendar('renderEvent', eventData)
       this.element.fullCalendar('unselect')
+      const modalDom = $(this.$refs.eventModal)
+      modalDom.modal('hide')
+    },
+    onSelectFunction: function (start, end) {
+      this.form.start = start
+      this.form.end = end
+      const modalDom = $(this.$refs.eventModal)
+      modalDom.modal('show')
     },
     onDragStartFunction: function (event) {
       console.log('starting')
