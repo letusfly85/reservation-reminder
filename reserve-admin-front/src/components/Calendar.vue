@@ -14,7 +14,11 @@
                <textarea class="form-control" id="eventDescription" v-model="form.description" />
              </div>
              <div>
-               <input class="form-control time" id="eventStart" v-model="form.start">
+               <flat-pickr :config="configs.timePicker"
+                           class="form-control"
+                           v-model="form.start"
+                           placeholder="Time">
+               </flat-pickr>
              </div>
            </div>
          </div>
@@ -36,14 +40,16 @@
 <script>
 import moment from 'moment'
 import $ from 'jquery'
-import 'jquery-ui'
 import 'fullcalendar/dist/fullcalendar'
 import 'fullcalendar/dist/fullcalendar.css'
 import 'bootswatch/dist/flatly/bootstrap.css'
 import 'bootstrap/dist/js/bootstrap'
+import flatPickr from 'vue-flatpickr-component'
+import 'flatpickr/dist/flatpickr.css'
 
 export default {
   name: 'Calendar',
+  components: { flatPickr },
   data () {
     return {
       element: {},
@@ -53,6 +59,14 @@ export default {
         description: '',
         start: '',
         end: ''
+      },
+      configs: {
+        timePicker: {
+          wrap: true,
+          enableTime: true,
+          enableSeconds: true,
+          noCalendar: true
+        }
       }
     }
   },
