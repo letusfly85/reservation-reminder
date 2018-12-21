@@ -5,10 +5,17 @@
        <div class="modal-content">
          <div class="modal-header">
            <div class="modal-body">
-             <label for="eventTitle">title</label>
-             <input type="text" class="input-group" id="eventTitle" v-model="form.title">
-             <label for="eventDescription">description</label>
-             <textarea class="input-group" id="eventDescription" v-model="form.description" />
+             <div class="form-group">
+               <label for="eventTitle">title</label>
+               <input type="text" class="form-control" id="eventTitle" v-model="form.title">
+             </div>
+             <div class="form-group">
+               <label for="eventDescription">description</label>
+               <textarea class="form-control" id="eventDescription" v-model="form.description" />
+             </div>
+             <div>
+               <input class="form-control time" id="eventStart" v-model="form.start">
+             </div>
            </div>
          </div>
          <div class="modal-footer">
@@ -28,11 +35,12 @@
 
 <script>
 import moment from 'moment'
+import $ from 'jquery'
+import 'jquery-ui'
 import 'fullcalendar/dist/fullcalendar'
 import 'fullcalendar/dist/fullcalendar.css'
 import 'bootswatch/dist/flatly/bootstrap.css'
 import 'bootstrap/dist/js/bootstrap'
-import $ from 'jquery'
 
 export default {
   name: 'Calendar',
