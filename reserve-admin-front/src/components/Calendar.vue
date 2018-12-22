@@ -71,9 +71,7 @@ export default {
       events: [],
       form: {
         title: '',
-        description: '',
-        start: '',
-        end: ''
+        description: ''
       },
       pickerData: {
         start: '',
@@ -93,31 +91,10 @@ export default {
   },
   methods: {
     updateCalenderEvent: function () {
-      console.log(this.form)
       let eventData = {}
       eventData.title = this.form.title
-
-      if (!this.eventClickedFlag) {
-        let startYmd = moment(this.form.start).format('YYYY-MM-DD')
-        let endYmd = moment(this.form.start).format('YYYY-MM-DD')
-        let startDate = (`${startYmd} ${this.pickerData.start}`)
-        startDate = moment(startDate)
-        let endDate = (`${endYmd} ${this.pickerData.end}`)
-        endDate = moment(endDate)
-        eventData.start = startDate
-        eventData.end = endDate
-        if (this.form.start) {
-          if (moment(this.form.start).format('YYYY-MM-DD HH:mm:ss') !== moment(this.form.end).format('YYYY-MM-DD HH:mm:ss')) {
-            this.allDayCheckFlag = false
-            eventData.start = moment(this.form.start).format('YYYY-MM-DD HH:mm:ss')
-            eventData.end = moment(this.form.end).format('YYYY-MM-DD HH:mm:ss')
-          }
-        }
-      } else {
-        eventData.start = this.targetEvent.start
-        eventData.end = this.targetEvent.end
-      }
-
+      eventData.start = this.pickerData.start
+      eventData.end = this.pickerData.end
       eventData.allDay = this.allDayCheckFlag
 
       console.log(eventData)
@@ -129,7 +106,6 @@ export default {
         // this.element.fullCalendar('updateEvents', [this.targetEvent])
       }
 
-      this.eventClickedFlag = false
       this.targetEvent = {}
       this.form = {}
       this.allDayCheckFlag = true
@@ -138,12 +114,12 @@ export default {
       modalDom.modal('hide')
     },
     onSelectFunction: function (start, end) {
-      this.form.start = start
-      this.form.end = end
-      console.log(this.form)
+      console.log(start)
+      console.log(end)
 
-      this.pickerData.start = moment(this.form.start).format('hh:mm:ss')
-      this.pickerData.end = moment(this.form.end).format('hh:mm:ss')
+      // FIXME apply business hour
+      this.pickerData.start = moment(start).format('YYYY-MM-DD HH:mm:ss')
+      this.pickerData.end = moment(end).format('YYYY-MM-DD HH:mm:ss')
 
       const modalDom = $(this.$refs.eventModal)
       modalDom.modal('show')
@@ -168,8 +144,8 @@ export default {
     },
     eventClickHandler: function (event) {
       this.allDayCheckFlag = event.allDay
-      this.pickerData.start = moment(event.start).format('HH:mm:ss')
-      this.pickerData.end = moment(event.end).format('HH:mm:ss')
+      this.pickerData.start = moment(event.start).format('YYYY-MM-DD HH:mm:ss')
+      this.pickerData.end = moment(event.end).format('YYYY-MM-DD HH:mm:ss')
       this.form.title = event.title
       this.form.description = event.description
 
