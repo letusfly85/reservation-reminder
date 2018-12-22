@@ -6,19 +6,34 @@
          <div class="modal-header">
            <div class="modal-body">
              <div class="form-group">
-               <label for="eventTitle">title</label>
+               <label for="eventTitle">予定名</label>
                <input type="text" class="form-control" id="eventTitle" v-model="form.title">
              </div>
              <div class="form-group">
-               <label for="eventDescription">description</label>
+               <label for="eventDescription">説明</label>
                <textarea class="form-control" id="eventDescription" v-model="form.description" />
              </div>
-             <div>
-               <flat-pickr :config="configs.timePicker"
-                           class="form-control"
-                           v-model="form.start"
-                           placeholder="Time">
-               </flat-pickr>
+             <div class="form-check">
+               <input class="form-check-input" type="checkbox" v-model="allDayCheckFlag" id="allDayCheck">
+               <label class="form-check-label" for="allDayCheck">
+                 終日
+               </label>
+             </div>
+             <div v-show="!allDayCheckFlag">
+               <div class="col-4 pt-2">
+                 <flat-pickr :config="configs.timePicker"
+                             class="form-control float-left"
+                             v-model="pickerData.start"
+                             placeholder="開始時間">
+                 </flat-pickr>
+               </div>
+               <div class="col-4 pl-3 float-left">
+                 <flat-pickr :config="configs.timePicker"
+                             class="form-control float-left"
+                             v-model="pickerData.end"
+                             placeholder="終了時間">
+                 </flat-pickr>
+               </div>
              </div>
            </div>
          </div>
@@ -60,6 +75,11 @@ export default {
         start: '',
         end: ''
       },
+      pickerData: {
+        start: '',
+        end: ''
+      },
+      allDayCheckFlag: true,
       configs: {
         timePicker: {
           wrap: true,
@@ -79,6 +99,7 @@ export default {
         title: this.form.title
       }
       console.log(eventData)
+      console.log(this.pickerData)
       this.element.fullCalendar('renderEvent', eventData)
       this.element.fullCalendar('unselect')
       const modalDom = $(this.$refs.eventModal)
