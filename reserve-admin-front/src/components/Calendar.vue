@@ -80,6 +80,8 @@ export default {
         end: ''
       },
       allDayCheckFlag: true,
+      eventClickedFlag: false,
+      targetEvent: {},
       configs: {
         timePicker: {
           wrap: true,
@@ -97,22 +99,33 @@ export default {
         end: this.form.end,
         title: this.form.title
       }
+      // TODO change logic to modify above multiple days
       let startYmd = moment(this.form.start).format('YYYY-MM-DD')
       let endYmd = moment(this.form.start).format('YYYY-MM-DD')
+      let startDate
+      let endDate
       if (!this.allDayCheckFlag) {
-        let startDate = (`${startYmd} ${this.pickerData.start}`)
+        startDate = (`${startYmd} ${this.pickerData.start}`)
         startDate = moment(startDate)
-        let endDate = (`${endYmd} ${this.pickerData.end}`)
+        endDate = (`${endYmd} ${this.pickerData.end}`)
         endDate = moment(endDate)
-        eventData = {
-          start: startDate,
-          end: endDate,
-          title: this.form.title
-        }
+        eventData.start = startDate
+        eventData.end = endDate
       }
-      console.log(eventData)
-      this.element.fullCalendar('renderEvent', eventData)
+      if (this.eventClickedFlag) {
+        this.element.fullCalendar('removeEvents', [this.targetEvent._id])
+        this.element.fullCalendar('renderEvent', eventData)
+        // FIXME updateEvents API not work
+        // this.element.fullCalendar('updateEvents', [this.targetEvent])
+      } else {
+        this.element.fullCalendar('renderEvent', eventData)
+      }
+
       this.element.fullCalendar('unselect')
+      this.eventClickedFlag = false
+      this.targetEvent = {}
+      this.allDayCheckFlag = true
+
       const modalDom = $(this.$refs.eventModal)
       modalDom.modal('hide')
     },
@@ -120,17 +133,11 @@ export default {
       this.form.start = start
       this.form.end = end
 
-      if (moment(start).format('YYYY-MM-DD') !== moment(end).format('YYYY-MM-DD')) {
-        const modalDom = $(this.$refs.eventModal)
-        modalDom.modal('show')
-      } else {
-        let eventData = {
-          start: start,
-          end: end
-        }
-        this.element.fullCalendar('renderEvent', eventData)
-        this.element.fullCalendar('unselect')
-      }
+      this.pickerData.start = moment(this.form.start).format('hh:mm:ss')
+      this.pickerData.end = moment(this.form.end).format('hh:mm:ss')
+
+      const modalDom = $(this.$refs.eventModal)
+      modalDom.modal('show')
     },
     onDragStartFunction: function (event) {
       console.log('starting')
@@ -151,13 +158,13 @@ export default {
       this.element.fullCalendar('unselect')
     },
     eventClickHandler: function (event) {
-      let title = prompt('予定を入力してください:', event.title)
-      if (title && title !== '') {
-        event.title = title
-        this.element.fullCalendar('updateEvent', event) // イベント（予定）の修正
-      } else {
-        this.element.fullCalendar('removeEvent', event.id) // イベント（予定）の削除
-      }
+      this.pickerData.start = moment(event.start).format('hh:mm:ss')
+      this.pickerData.end = moment(event.end).format('hh:mm:ss')
+
+      const modalDom = $(this.$refs.eventModal)
+      this.eventClickedFlag = true
+      this.targetEvent = event
+      modalDom.modal('show')
     }
   },
   created: function () {
@@ -191,8 +198,6 @@ export default {
         day: '今日',
         week: '今週',
         month: '今月'
-        // prev: '前へ',
-        // next: '次へ'
       },
       monthNames: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
       dayNames: ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'],
