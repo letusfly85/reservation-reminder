@@ -86,44 +86,52 @@ export default {
         timePicker: {
           wrap: true,
           enableTime: true,
-          enableSeconds: true,
-          noCalendar: true
+          enableSeconds: true
         }
       }
     }
   },
   methods: {
     updateCalenderEvent: function () {
-      let eventData = {
-        start: this.form.start,
-        end: this.form.end,
-        title: this.form.title
-      }
-      // TODO change logic to modify above multiple days
-      let startYmd = moment(this.form.start).format('YYYY-MM-DD')
-      let endYmd = moment(this.form.start).format('YYYY-MM-DD')
-      let startDate
-      let endDate
-      if (!this.allDayCheckFlag) {
-        startDate = (`${startYmd} ${this.pickerData.start}`)
+      console.log(this.form)
+      let eventData = {}
+      eventData.title = this.form.title
+
+      if (!this.eventClickedFlag) {
+        let startYmd = moment(this.form.start).format('YYYY-MM-DD')
+        let endYmd = moment(this.form.start).format('YYYY-MM-DD')
+        let startDate = (`${startYmd} ${this.pickerData.start}`)
         startDate = moment(startDate)
-        endDate = (`${endYmd} ${this.pickerData.end}`)
+        let endDate = (`${endYmd} ${this.pickerData.end}`)
         endDate = moment(endDate)
         eventData.start = startDate
         eventData.end = endDate
-      }
-      if (this.eventClickedFlag) {
-        this.element.fullCalendar('removeEvents', [this.targetEvent._id])
-        this.element.fullCalendar('renderEvent', eventData)
-        // FIXME updateEvents API not work
-        // this.element.fullCalendar('updateEvents', [this.targetEvent])
+        if (this.form.start) {
+          if (moment(this.form.start).format('YYYY-MM-DD HH:mm:ss') !== moment(this.form.end).format('YYYY-MM-DD HH:mm:ss')) {
+            this.allDayCheckFlag = false
+            eventData.start = moment(this.form.start).format('YYYY-MM-DD HH:mm:ss')
+            eventData.end = moment(this.form.end).format('YYYY-MM-DD HH:mm:ss')
+          }
+        }
       } else {
-        this.element.fullCalendar('renderEvent', eventData)
+        eventData.start = this.targetEvent.start
+        eventData.end = this.targetEvent.end
       }
 
+      eventData.allDay = this.allDayCheckFlag
+
+      console.log(eventData)
+      this.element.fullCalendar('renderEvent', eventData)
       this.element.fullCalendar('unselect')
+      if (this.eventClickedFlag) {
+        this.element.fullCalendar('removeEvents', [this.targetEvent._id])
+        // FIXME updateEvents API not work
+        // this.element.fullCalendar('updateEvents', [this.targetEvent])
+      }
+
       this.eventClickedFlag = false
       this.targetEvent = {}
+      this.form = {}
       this.allDayCheckFlag = true
 
       const modalDom = $(this.$refs.eventModal)
@@ -132,6 +140,7 @@ export default {
     onSelectFunction: function (start, end) {
       this.form.start = start
       this.form.end = end
+      console.log(this.form)
 
       this.pickerData.start = moment(this.form.start).format('hh:mm:ss')
       this.pickerData.end = moment(this.form.end).format('hh:mm:ss')
@@ -158,8 +167,11 @@ export default {
       this.element.fullCalendar('unselect')
     },
     eventClickHandler: function (event) {
-      this.pickerData.start = moment(event.start).format('hh:mm:ss')
-      this.pickerData.end = moment(event.end).format('hh:mm:ss')
+      this.allDayCheckFlag = event.allDay
+      this.pickerData.start = moment(event.start).format('HH:mm:ss')
+      this.pickerData.end = moment(event.end).format('HH:mm:ss')
+      this.form.title = event.title
+      this.form.description = event.description
 
       const modalDom = $(this.$refs.eventModal)
       this.eventClickedFlag = true
@@ -180,6 +192,7 @@ export default {
       },
       // https://stackoverflow.com/questions/26458108/fullcalendar-v2-how-to-maintain-the-same-scroll-time-when-navigating-weeks
       // height: 'auto',
+      timezone: 'local',
       scrollTime: '09:00:00',
       allDayText: '終日',
       defaultView: 'month',
