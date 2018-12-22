@@ -92,14 +92,25 @@ export default {
   },
   methods: {
     updateCalenderEvent: function () {
-      console.log(this.form)
-      const eventData = {
+      let eventData = {
         start: this.form.start,
         end: this.form.end,
         title: this.form.title
       }
+      let startYmd = moment(this.form.start).format('YYYY-MM-DD')
+      let endYmd = moment(this.form.start).format('YYYY-MM-DD')
+      if (!this.allDayCheckFlag) {
+        let startDate = (`${startYmd} ${this.pickerData.start}`)
+        startDate = moment(startDate)
+        let endDate = (`${endYmd} ${this.pickerData.end}`)
+        endDate = moment(endDate)
+        eventData = {
+          start: startDate,
+          end: endDate,
+          title: this.form.title
+        }
+      }
       console.log(eventData)
-      console.log(this.pickerData)
       this.element.fullCalendar('renderEvent', eventData)
       this.element.fullCalendar('unselect')
       const modalDom = $(this.$refs.eventModal)
@@ -108,8 +119,18 @@ export default {
     onSelectFunction: function (start, end) {
       this.form.start = start
       this.form.end = end
-      const modalDom = $(this.$refs.eventModal)
-      modalDom.modal('show')
+
+      if (moment(start).format('YYYY-MM-DD') !== moment(end).format('YYYY-MM-DD')) {
+        const modalDom = $(this.$refs.eventModal)
+        modalDom.modal('show')
+      } else {
+        let eventData = {
+          start: start,
+          end: end
+        }
+        this.element.fullCalendar('renderEvent', eventData)
+        this.element.fullCalendar('unselect')
+      }
     },
     onDragStartFunction: function (event) {
       console.log('starting')
