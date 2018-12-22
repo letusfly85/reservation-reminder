@@ -113,9 +113,10 @@ export default {
       const modalDom = $(this.$refs.eventModal)
       modalDom.modal('hide')
     },
-    onSelectFunction: function (start, end) {
+    onSelectFunction: function (start, end, jsEvent, view) {
       console.log(start)
       console.log(end)
+      this.allDayCheckFlag = !start.hasTime() && !end.hasTime()
 
       // FIXME apply business hour
       this.pickerData.start = moment(start).format('YYYY-MM-DD HH:mm:ss')
