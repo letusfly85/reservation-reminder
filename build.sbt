@@ -22,6 +22,7 @@ libraryDependencies ++= {
     "ch.qos.logback"    %  "logback-classic"         % "1.1.7",
     "com.typesafe.akka" %% "akka-stream"             % akkaV,
     "com.typesafe.akka" %% "akka-http"               % akkaHttpV,
+    "ch.megard" %% "akka-http-cors" % "0.3.3",
     "com.github.dnvriend" %% "akka-persistence-jdbc" % "3.4.0",
     "mysql" % "mysql-connector-java" % "5.1.47",
     "io.getquill" %% "quill-core" % quillV,
