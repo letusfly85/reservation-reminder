@@ -1,8 +1,8 @@
 <script>
 import axios from 'axios'
-axios.defaults.xsrfHeaderName = 'Csrf-Token'
-axios.defaults.xsrfCookieName = 'PLAY_CSRF_TOKEN'
-axios.defaults.withCredentials = true
+// axios.defaults.xsrfHeaderName = 'Csrf-Token'
+// axios.defaults.xsrfCookieName = 'PLAY_CSRF_TOKEN'
+// axios.defaults.withCredentials = true
 
 const baseUrl = process.env.api_base_url
 
@@ -38,11 +38,11 @@ export default {
     })
   },
   create: function (path, params, callback, errorHandler) {
-    let targetPath = baseUrl + path
+    let targetPath = `${baseUrl}${path}`
     console.log(params)
     console.log(targetPath)
 
-    axios.post(targetPath, params, {}).then((response) => {
+    axios.post(targetPath, params).then((response) => {
       callback(response)
     }).catch(function (error) {
       errorHandler(error)

@@ -62,6 +62,8 @@ import 'bootstrap/dist/js/bootstrap'
 import flatPickr from 'vue-flatpickr-component'
 import 'flatpickr/dist/flatpickr.css'
 
+import ReservationService from './service/ReservationService'
+
 export default {
   name: 'Calendar',
   components: { flatPickr },
@@ -104,6 +106,17 @@ export default {
         this.element.fullCalendar('removeEvents', [this.targetEvent._id])
         // FIXME updateEvents API not work
         // this.element.fullCalendar('updateEvents', [this.targetEvent])
+      } else {
+        let params = {
+          id: 1,
+          name: eventData.title,
+          reserved_user_id: 'FIXME',
+          description: this.form.description,
+          reserved_from: moment(eventData.start).format('YYYY-MM-DDThh:mm:ss'),
+          reserved_to: moment(eventData.end).format('YYYY-MM-DDThh:mm:ss')
+        }
+        let userId = '1'
+        ReservationService.createReservation(userId, params)
       }
 
       this.targetEvent = {}
