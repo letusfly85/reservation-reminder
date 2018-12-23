@@ -16,8 +16,7 @@ final case class ReserveEntity
   executedAt: Option[DateTime] = None,
   canceledAt: Option[DateTime] = None
 ) {
-  require(id > 0, "larger.zero")
-  require(reservedUserId.nonEmpty , "larger.zero")
+  require(reservedUserId.nonEmpty , "reservedUserId.empty")
   require(name.nonEmpty, "name.empty")
 }
 
@@ -62,17 +61,23 @@ object ReserveEntity {
     "reserved_to",
     "executed_at",
     "canceled_at"
-  )((id: Int, reservedUserId: String, name: String, description: Option[String], command: Option[String],
-     reservedFrom: DateTime, reservedTo: DateTime,
+  )((id: Int,
+     reservedUserId: String,
+     name: String,
+     description: Option[String],
+     command: Option[String],
+     reservedFrom: DateTime,
+     reservedTo: DateTime,
      executedAt: Option[DateTime],
      canceldAt: Option[DateTime]) => {
     new ReserveEntity(
       id = id,
       reservedUserId = reservedUserId.toString,
       name = name.toString,
+      description = description,
       command = command,
-      reservedFrom = new DateTime(),
-      reservedTo = new DateTime()
+      reservedFrom = reservedFrom,
+      reservedTo = reservedTo
     )
   })
 }

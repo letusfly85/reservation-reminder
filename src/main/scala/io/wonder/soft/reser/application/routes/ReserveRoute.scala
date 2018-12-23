@@ -1,8 +1,6 @@
 package io.wonder.soft.reser.application.routes
 
 
-import java.util.Date
-
 import io.circe.generic.auto._
 import io.circe.syntax._
 import io.circe.{Encoder, Json}
@@ -31,86 +29,89 @@ class ReserveRoute(reserveService: ReserveService)
 
   val prefix = "reserves"
 
-  val route = pathPrefix(prefix) {
-    parameters('userId) { userId =>
-      get {
-        val futureReserves = reserveService.searchByUserId(userId)
-        val reserveJson = futureReserves.map { reserveEntities =>
-          reserveEntities.map(_.asJson).asJson
-        }
+  // val route = cors() {
+  val route =
+    path(prefix) {
+      parameters('userId) { userId =>
+        get {
+          val futureReserves = reserveService.searchByUserId(userId)
+          val reserveJson = futureReserves.map { reserveEntities =>
+            reserveEntities.map(_.asJson).asJson
+          }
 
-        completeOrRecoverWith(reserveJson) { extraction =>
-          failWith(extraction)
-        }
-      }
-    } ~ path(Segment) { id =>
-      get {
-        Try {
-          for {
-            entity <- reserveService.findT(id.toInt).value
-            json <- Future(entity.get)
-          } yield json
-
-        } match {
-          case Success(json) =>
-            completeOrRecoverWith(json) { extraction =>
-              failWith(extraction)
-            }
-          case Failure(ex) => complete("ok")
-        }
-      }
-
-    } ~ put {
-      entity(as[ReserveEntity]) { reserveEntity =>
-        val newValue = reserveService.update(reserveEntity).value
-
-        val reserveJson = newValue.map { reserveEntities =>
-          reserveEntities match {
-            case Right(entity) => {
-              StatusCodes.OK -> entity.asJson
-            }
-
-            case Left(ex) => {
-              StatusCodes.InternalServerError ->
-                ErrorResponseEntity.NotFoundEntity(
-                  path = prefix, method = "PUT",
-                  message = ex.getMessage, targetResource = ""
-                ).asJson
-            }
+          completeOrRecoverWith(reserveJson) { extraction =>
+            failWith(extraction)
           }
         }
-        completeOrRecoverWith(reserveJson) { extraction =>
-          failWith(extraction)
-        }
-      }
-    } ~ post {
-      entity(as[ReserveEntity]) { reserveEntity =>
-        val newValue = reserveService.create(reserveEntity).value
-        val command = reserveEntity.command.getOrElse(s"echo ${reserveEntity.name}")
-        val job = SimpleJobGenerator.generateJob(reserveEntity.name, "test", command)
-        val trigger = SimpleJobGenerator.generateTrigger(reserveEntity.name, "test", new Date(), 1, 0)
+      } ~ path(Segment) { id =>
+        get {
+          Try {
+            for {
+              entity <- reserveService.findT(id.toInt).value
+              json <- Future(entity.get)
+            } yield json
 
-        SimpleJobExecutor.startSchedule(job, trigger)
-
-        val reserveJson = newValue.map { reserveEntities =>
-          reserveEntities match {
-            case Right(entity) => {
-              StatusCodes.OK -> entity.asJson
-            }
-
-            case Left(ex) => {
-              StatusCodes.InternalServerError ->
-                ErrorResponseEntity.NotFoundEntity(
-                  path = prefix, method = "POST",
-                  message = ex.getMessage, targetResource = ""
-                ).asJson
-            }
+          } match {
+            case Success(json) =>
+              completeOrRecoverWith(json) { extraction =>
+                failWith(extraction)
+              }
+            case Failure(ex) => complete("ok")
           }
         }
-        completeOrRecoverWith(reserveJson) { extraction =>
-          failWith(extraction)
+
+      } ~ put {
+        entity(as[ReserveEntity]) { reserveEntity =>
+          val newValue = reserveService.update(reserveEntity).value
+
+          val reserveJson = newValue.map { reserveEntities =>
+            reserveEntities match {
+              case Right(entity) => {
+                StatusCodes.OK -> entity.asJson
+              }
+
+              case Left(ex) => {
+                StatusCodes.InternalServerError ->
+                  ErrorResponseEntity.NotFoundEntity(
+                    path = prefix, method = "PUT",
+                    message = ex.getMessage, targetResource = ""
+                  ).asJson
+              }
+            }
+          }
+          completeOrRecoverWith(reserveJson) { extraction =>
+            failWith(extraction)
+          }
+        }
+      } ~ post {
+        entity(as[ReserveEntity]) { reserveEntity =>
+          val newValue = reserveService.create(reserveEntity).value
+          val command = reserveEntity.command.getOrElse(s"echo ${reserveEntity.name}")
+          // val job = SimpleJobGenerator.generateJob(reserveEntity.name, "test", command)
+          // val trigger = SimpleJobGenerator.generateTrigger(reserveEntity.name, "test", new Date(), 1, 0)
+
+          // SimpleJobExecutor.startSchedule(job, trigger)
+
+          val reserveJson = newValue.map { reserveEntities =>
+            reserveEntities match {
+              case Right(entity) => {
+                StatusCodes.OK -> entity.asJson
+              }
+
+              case Left(ex) => {
+                StatusCodes.InternalServerError ->
+                  ErrorResponseEntity.NotFoundEntity(
+                    path = prefix, method = "POST",
+                    message = ex.getMessage, targetResource = ""
+                  ).asJson
+              }
+            }
+          }
+          completeOrRecoverWith(reserveJson) { extraction =>
+            failWith(extraction)
+          }
         }
       }
     }
-  }
+  // }
 }

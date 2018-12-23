@@ -4,7 +4,10 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives._
 import akka.actor.{ActorSystem, Props}
 import akka.event.{Logging, LoggingAdapter}
+import akka.http.scaladsl.server.RejectionHandler
 import akka.stream.{ActorMaterializer, Materializer}
+import ch.megard.akka.http.cors.scaladsl.CorsDirectives
+import ch.megard.akka.http.cors.scaladsl.settings.CorsSettings
 import com.typesafe.config.{Config, ConfigFactory}
 import io.wonder.soft.reser.application.routes.ReserveRoute
 import io.wonder.soft.reser.domain.job.{SimpleJobExecutor, SimpleJobGenerator}
@@ -23,7 +26,10 @@ trait ReminderApp extends AppModule {
 
   def reserveRoute = new ReserveRoute(reserveService)
 
-  val routes =
+  import ch.megard.akka.http.cors.scaladsl.CorsDirectives._
+  val settings = CorsSettings.defaultSettings.withAllowCredentials(false)
+  val routes = handleRejections(CorsDirectives.corsRejectionHandler) {cors(settings) {
+    handleRejections(RejectionHandler.default) {
     path("api" / "v1" / "status") {
       (get | post) {
         val actor = system.actorOf(Props[DockerManageActor])
@@ -34,6 +40,7 @@ trait ReminderApp extends AppModule {
     } ~ pathPrefix("api" / "v1") {
       reserveRoute.route
     }
+  }}}
 
 }
 
@@ -46,6 +53,6 @@ object ReminderApp extends App with ReminderApp {
   override val config = ConfigFactory.load()
   override val logger = Logging(system, getClass)
 
-  Http().bindAndHandle(routes, "0.0.0.0", 8081)
+  Http().bindAndHandle(routes, "0.0.0.0", 9000)
 }
 
