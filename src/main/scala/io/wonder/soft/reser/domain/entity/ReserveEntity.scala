@@ -13,6 +13,8 @@ final case class ReserveEntity
   command: Option[String] = None,
   reservedFrom: DateTime,
   reservedTo: DateTime,
+  allDayFlag: Boolean = false,
+  cronCycle: Option[String] = None,
   executedAt: Option[DateTime] = None,
   canceledAt: Option[DateTime] = None
 ) {
@@ -29,7 +31,7 @@ object ReserveEntity {
     override def apply(c: HCursor): Result[DateTime] = Decoder.decodeString.map(s => new DateTime(s)).apply(c)
   }
 
-  implicit def encodeReserve: Encoder[ReserveEntity] = Encoder.forProduct9(
+  implicit def encodeReserve: Encoder[ReserveEntity] = Encoder.forProduct11(
     "id",
     "reserved_user_id",
     "name",
@@ -37,6 +39,8 @@ object ReserveEntity {
     "command",
     "reserved_from",
     "reserved_to",
+    "all_day_flag",
+    "cron_cycle",
     "executed_at",
     "canceled_at"
   )(reserveEntity => (
@@ -47,11 +51,13 @@ object ReserveEntity {
     reserveEntity.command,
     reserveEntity.reservedFrom,
     reserveEntity.reservedTo,
+    reserveEntity.allDayFlag,
+    reserveEntity.cronCycle,
     reserveEntity.executedAt,
     reserveEntity.canceledAt
   ))
 
-  implicit val decodeReserve: Decoder[ReserveEntity] = Decoder.forProduct9(
+  implicit val decodeReserve: Decoder[ReserveEntity] = Decoder.forProduct11(
     "id",
     "reserved_user_id",
     "name",
@@ -59,6 +65,8 @@ object ReserveEntity {
     "command",
     "reserved_from",
     "reserved_to",
+    "all_day_flag",
+    "cron_cycle",
     "executed_at",
     "canceled_at"
   )((id: Int,
@@ -68,8 +76,10 @@ object ReserveEntity {
      command: Option[String],
      reservedFrom: DateTime,
      reservedTo: DateTime,
+     allDayFlag: Boolean,
+     cronCycle: Option[String],
      executedAt: Option[DateTime],
-     canceldAt: Option[DateTime]) => {
+     canceledAt: Option[DateTime]) => {
     new ReserveEntity(
       id = id,
       reservedUserId = reservedUserId.toString,
@@ -77,7 +87,11 @@ object ReserveEntity {
       description = description,
       command = command,
       reservedFrom = reservedFrom,
-      reservedTo = reservedTo
+      reservedTo = reservedTo,
+      allDayFlag = allDayFlag,
+      cronCycle = cronCycle,
+      executedAt = executedAt,
+      canceledAt = canceledAt
     )
   })
 }
