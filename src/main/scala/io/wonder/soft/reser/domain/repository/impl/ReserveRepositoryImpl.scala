@@ -24,6 +24,8 @@ class ReserveRepositoryImpl extends DBConfig with ReserveRepository {
       _.name -> "name",
       _.description -> "description",
       _.command  -> "command",
+      _.allDayFlag -> "all_day_flag",
+      _.cronCycle -> "cron_cycle",
       _.reservedFrom -> "reserved_from",
       _.reservedTo -> "reserved_to",
       _.canceledAt -> "canceled_at"
