@@ -17,7 +17,7 @@ class JobTransactionRoute(jobTransactionService: JobTransactionService)(implicit
       Json.fromString(a.toString("yyyy-MM-dd'T'HH:mm:ss"))
   }
 
-  val route = pathPrefix("job-transactions") {
+  val route = path("job-transactions") {
     parameters('statusName) { statusName =>
       get {
         val futureJobTransactions = jobTransactionService.searchByStatus(statusName)
