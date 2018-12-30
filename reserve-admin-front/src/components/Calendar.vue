@@ -111,6 +111,7 @@ export default {
           id: 1,
           name: eventData.title,
           reserved_user_id: 'FIXME',
+          all_day_flag: eventData.allDay,
           description: this.form.description,
           reserved_from: moment(eventData.start).format('YYYY-MM-DDThh:mm:ss'),
           reserved_to: moment(eventData.end).format('YYYY-MM-DDThh:mm:ss')

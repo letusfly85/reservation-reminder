@@ -71,7 +71,8 @@ class ReserveRepositoryImpl extends DBConfig with ReserveRepository {
           _.command -> lift(newEntity.command),
           _.reservedFrom -> lift(newEntity.reservedFrom),
           _.reservedTo -> lift(newEntity.reservedTo),
-          _.canceledAt -> lift(newEntity.canceledAt)
+          _.canceledAt -> lift(newEntity.canceledAt),
+          _.allDayFlag -> lift(newEntity.allDayFlag)
         )
       })
     } match {
