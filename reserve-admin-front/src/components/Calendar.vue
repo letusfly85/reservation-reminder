@@ -170,6 +170,12 @@ export default {
     }
   },
   created: function () {
+    const userId = 'FIXME'
+    ReservationService.findReservations(userId, (response) => {
+      console.log(response)
+    }, (error) => {
+      console.error(error)
+    })
   },
   mounted () {
     this.element = $(this.$refs.calendar)
