@@ -9,10 +9,17 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.model.StatusCodes
 import akka.stream.Materializer
+import com.softwaremill.session.{SessionConfig, SessionManager, SessionUtil}
+import com.softwaremill.session.SessionDirectives._
+import com.softwaremill.session.SessionOptions._
+import com.softwaremill.session.SessionResult._
+import com.softwaremill.session._
 import org.joda.time.DateTime
 
 import scala.concurrent.ExecutionContext
 import io.wonder.soft.reser.application.services.AuthService
+import io.wonder.soft.reser.domain.entity.{AuthSession, SignInEntity}
+
 
 class AuthRoute(authService: AuthService)
                (implicit executionContext: ExecutionContext, system: ActorSystem, materializer: Materializer)
@@ -25,9 +32,24 @@ class AuthRoute(authService: AuthService)
 
   val prefix = "auth"
 
-  val route = path(prefix) {
+  val sessionConfig = SessionConfig.default(SessionUtil.randomServerSecret())
+  implicit val sessionManager = new SessionManager[AuthSession](sessionConfig)
+
+  val route = pathPrefix(prefix) {
     get {
       complete(StatusCodes.OK)
+    } ~ path("signIn") {
+      post {
+        entity(as[SignInEntity]) { signInEntity: SignInEntity =>
+          if(signInEntity.userId == "TODO" && signInEntity.password == "TODO"){
+            setSession(oneOff, usingCookies, AuthSession(signInEntity.userId)) {
+              complete(StatusCodes.OK)
+            }
+          } else {
+            complete(StatusCodes.Unauthorized)
+          }
+        }
+      }
     }
   }
 

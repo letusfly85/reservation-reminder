@@ -9,7 +9,7 @@ import akka.stream.{ActorMaterializer, Materializer}
 import ch.megard.akka.http.cors.scaladsl.CorsDirectives
 import ch.megard.akka.http.cors.scaladsl.settings.CorsSettings
 import com.typesafe.config.{Config, ConfigFactory}
-import io.wonder.soft.reser.application.routes.ReserveRoute
+import io.wonder.soft.reser.application.routes.{AuthRoute, ReserveRoute}
 import io.wonder.soft.reser.domain.job.{SimpleJobExecutor, SimpleJobGenerator}
 import io.wonder.soft.reser.infra.{DockerManageActor, DockerService, ProgressHandleActor}
 
@@ -25,6 +25,7 @@ trait ReminderApp extends AppModule {
   def logger: LoggingAdapter
 
   def reserveRoute = new ReserveRoute(reserveService)
+  def authRoute = new AuthRoute(authService)
 
   import ch.megard.akka.http.cors.scaladsl.CorsDirectives._
   val settings = CorsSettings.defaultSettings.withAllowCredentials(false)
@@ -38,7 +39,8 @@ trait ReminderApp extends AppModule {
         complete("alive")
       }
     } ~ pathPrefix("api" / "v1") {
-      reserveRoute.route
+      reserveRoute.route ~
+      authRoute.route
     }
   }}}
 
