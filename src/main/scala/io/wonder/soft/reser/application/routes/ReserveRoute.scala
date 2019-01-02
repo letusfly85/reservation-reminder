@@ -15,7 +15,6 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
 import io.wonder.soft.reser.application.services.ReserveService
 import io.wonder.soft.reser.domain.entity.{ErrorResponseEntity, ReserveEntity}
-import io.wonder.soft.reser.domain.job.{SimpleJobExecutor, SimpleJobGenerator}
 
 class ReserveRoute(reserveService: ReserveService)
                   (implicit executionContext: ExecutionContext, system: ActorSystem, materializer: Materializer)
@@ -29,7 +28,6 @@ class ReserveRoute(reserveService: ReserveService)
 
   val prefix = "reserves"
 
-  // val route = cors() {
   val route =
     path(prefix) {
       parameters('userId) { userId =>
@@ -86,11 +84,13 @@ class ReserveRoute(reserveService: ReserveService)
       } ~ post {
         entity(as[ReserveEntity]) { reserveEntity =>
           val newValue = reserveService.create(reserveEntity).value
+          /*
           val command = reserveEntity.command.getOrElse(s"echo ${reserveEntity.name}")
-          // val job = SimpleJobGenerator.generateJob(reserveEntity.name, "test", command)
-          // val trigger = SimpleJobGenerator.generateTrigger(reserveEntity.name, "test", new Date(), 1, 0)
+          val job = SimpleJobGenerator.generateJob(reserveEntity.name, "test", command)
+          val trigger = SimpleJobGenerator.generateTrigger(reserveEntity.name, "test", new Date(), 1, 0)
 
-          // SimpleJobExecutor.startSchedule(job, trigger)
+          SimpleJobExecutor.startSchedule(job, trigger)
+          */
 
           val reserveJson = newValue.map { reserveEntities =>
             reserveEntities match {
@@ -113,5 +113,4 @@ class ReserveRoute(reserveService: ReserveService)
         }
       }
     }
-  // }
 }
