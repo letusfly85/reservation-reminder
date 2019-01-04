@@ -10,7 +10,7 @@ lazy val `reser` = (project in file("."))
 
 libraryDependencies ++= {
   val akkaV       = "2.5.19"
-  val akkaHttpV   = "10.1.5"
+  val akkaHttpV   = "10.1.7"
   val quillV = "2.6.0"
   val circeV = "0.9.3"
   val macwireV = "2.3.1"
