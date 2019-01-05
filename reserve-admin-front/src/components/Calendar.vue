@@ -1,5 +1,5 @@
 <template>
- <div id="calendar" ref="calendar" style="width: 80%; margin-left: 10%; margin-top: 2rem;">
+ <div v-if="dataReady" id="calendar" ref="calendar" style="width: 80%; margin-left: 10%; margin-top: 2rem;">
    <div ref="eventModal" class="modal fade" style="width: 1500px;">
      <div class="modal-dialog modal-lg">
        <div class="modal-content">
@@ -69,7 +69,8 @@ export default {
   components: { flatPickr },
   data () {
     return {
-      element: {},
+      dataReady: false,
+      element: undefined,
       events: [],
       form: {
         title: '',
@@ -127,7 +128,7 @@ export default {
       const modalDom = $(this.$refs.eventModal)
       modalDom.modal('hide')
     },
-    onSelectFunction: function (start, end, jsEvent, view) {
+    onSelectFunction: function (start, end) {
       console.log(start)
       console.log(end)
       this.allDayCheckFlag = !start.hasTime() && !end.hasTime()
@@ -168,79 +169,97 @@ export default {
       this.eventClickedFlag = true
       this.targetEvent = event
       modalDom.modal('show')
+    },
+    loadEvents: function () {
+      const userId = 'FIXME'
+      const self = this
+      ReservationService.findReservations(userId, (response) => {
+        self.events = response.data.map(function (record) {
+          let event = {
+            title: record.name,
+            description: record.description,
+            allDay: record.all_day_flag,
+            start: moment(record.reserved_from).format('YYYY-MM-DD HH:mm:ss'),
+            end: moment(record.reserved_to).format('YYYY-MM-DD HH:mm:ss')
+          }
+          return event
+        })
+        this.dataReady = true
+        this.renderFullCalendar()
+      }, (error) => {
+        console.error(error)
+      })
+    },
+    renderFullCalendar: function () {
+      this.element = $(this.$refs.calendar)
+      const calendarOptions = {
+        themeSystem: 'bootstrap4',
+        header: {
+          left: 'prev next today',
+          center: 'title',
+          right: 'month agendaWeek agendaDay listWeek'
+        },
+        // https://stackoverflow.com/questions/26458108/fullcalendar-v2-how-to-maintain-the-same-scroll-time-when-navigating-weeks
+        // height: 'auto',
+        timezone: 'local',
+        scrollTime: '09:00:00',
+        allDayText: '終日',
+        defaultView: 'month',
+        slotDuration: moment.duration(15, 'minutes'),
+        slotLabelFormat: 'HH:mm',
+        businessHours: true,
+        eventLimit: true,
+        buttonIcons: {
+          close: 'fa-times',
+          prev: 'fa-chevron-left',
+          next: 'fa-chevron-right',
+          prevYear: 'fa-angle-double-left',
+          nextYear: 'fa-angle-double-right'
+        },
+        buttonText: {
+          day: '今日',
+          week: '今週',
+          month: '今月'
+        },
+        monthNames: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+        dayNames: ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'],
+        dayNamesShort: ['日', '月', '火', '水', '木', '金', '土'],
+        aspectRatio: 2,
+        timeFormat: 'HH:mm',
+        views: {
+          month: {
+            columnFormat: 'ddd'
+          },
+          week: {
+            columnFormat: 'D[(]ddd[)]'
+          },
+          day: {
+            columnFormat: 'D[(]ddd[)]'
+          }
+        },
+        navLinks: true,
+        selectable: true,
+        selectHelper: true,
+        select: this.onSelectFunction,
+        eventDragStart: this.onDragStartFunction,
+        eventDragStop: this.onDragStopFunction,
+        eventDrop: this.onDropFunction,
+        eventResize: this.onReSizeFunction,
+        eventRender: this.addEventRender,
+        updateRenderer: this.onUpdateEventData,
+        eventClick: this.eventClickHandler,
+        editable: true,
+        droppable: true,
+        events: this.events
+      }
+      this.element.fullCalendar(calendarOptions)
     }
   },
-  created: function () {
-    const userId = 'FIXME'
-    ReservationService.findReservations(userId, (response) => {
-      console.log(response)
-    }, (error) => {
-      console.error(error)
-    })
+  created: async function () {
+    await this.loadEvents()
   },
-  mounted () {
-    this.element = $(this.$refs.calendar)
-    const calendarOptions = {
-      themeSystem: 'bootstrap4',
-      header: {
-        left: 'prev next today',
-        center: 'title',
-        right: 'month agendaWeek agendaDay listWeek'
-      },
-      // https://stackoverflow.com/questions/26458108/fullcalendar-v2-how-to-maintain-the-same-scroll-time-when-navigating-weeks
-      // height: 'auto',
-      timezone: 'local',
-      scrollTime: '09:00:00',
-      allDayText: '終日',
-      defaultView: 'month',
-      slotDuration: moment.duration(15, 'minutes'),
-      slotLabelFormat: 'HH:mm',
-      businessHours: true,
-      eventLimit: true,
-      buttonIcons: {
-        close: 'fa-times',
-        prev: 'fa-chevron-left',
-        next: 'fa-chevron-right',
-        prevYear: 'fa-angle-double-left',
-        nextYear: 'fa-angle-double-right'
-      },
-      buttonText: {
-        day: '今日',
-        week: '今週',
-        month: '今月'
-      },
-      monthNames: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-      dayNames: ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'],
-      dayNamesShort: ['日', '月', '火', '水', '木', '金', '土'],
-      aspectRatio: 2,
-      timeFormat: 'HH:mm',
-      views: {
-        month: {
-          columnFormat: 'ddd'
-        },
-        week: {
-          columnFormat: 'D[(]ddd[)]'
-        },
-        day: {
-          columnFormat: 'D[(]ddd[)]'
-        }
-      },
-      navLinks: true,
-      selectable: true,
-      selectHelper: true,
-      select: this.onSelectFunction,
-      eventDragStart: this.onDragStartFunction,
-      eventDragStop: this.onDragStopFunction,
-      eventDrop: this.onDropFunction,
-      eventResize: this.onReSizeFunction,
-      eventRender: this.addEventRender,
-      updateRenderer: this.onUpdateEventData,
-      eventClick: this.eventClickHandler,
-      editable: true,
-      droppable: true,
-      events: this.events
-    }
-    this.element.fullCalendar(calendarOptions)
+  async mounted () {
+    await this.loadEvents()
   },
   onUpdateEventData: function (eventsData) {
     this.element.fullCalendar('removeEvents')

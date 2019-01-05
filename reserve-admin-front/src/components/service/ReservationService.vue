@@ -4,12 +4,12 @@ import ApiClient from './ApiClient'
 const pathPrefix = '/api/v1/reserves'
 export default {
   name: 'ReservationService',
-  findReservations: function (userId) {
+  findReservations: function (userId, callback, errorHandler) {
     let path = `${pathPrefix}?userId=${userId}`
     ApiClient.search(path, (response) => {
-      console.log(response)
+      callback(response)
     }, (error) => {
-      console.error(error)
+      errorHandler(error)
     })
   },
   createReservation: function (userId, params) {
