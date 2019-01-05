@@ -11,7 +11,7 @@ import ch.megard.akka.http.cors.scaladsl.settings.CorsSettings
 import com.typesafe.config.{Config, ConfigFactory}
 import io.wonder.soft.reser.application.routes.{AuthRoute, ReserveRoute}
 import io.wonder.soft.reser.domain.job.{SimpleJobExecutor, SimpleJobGenerator}
-import io.wonder.soft.reser.infra.{DockerManageActor, DockerService, ProgressHandleActor}
+import io.wonder.soft.reser.infra.DockerManageActor
 
 import scala.concurrent.ExecutionContextExecutor
 
