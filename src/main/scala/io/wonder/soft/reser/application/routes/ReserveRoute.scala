@@ -30,7 +30,7 @@ class ReserveRoute(reserveService: ReserveService)
 
   val route =
     path(prefix) {
-      parameters('userId) { userId =>
+      parameters('user_id) { userId =>
         get {
           val futureReserves = reserveService.searchByUserId(userId)
           val reserveJson = futureReserves.map { reserveEntities =>
@@ -54,7 +54,14 @@ class ReserveRoute(reserveService: ReserveService)
               completeOrRecoverWith(json) { extraction =>
                 failWith(extraction)
               }
-            case Failure(ex) => complete("ok")
+            case Failure(ex) =>
+              complete(
+                StatusCodes.InternalServerError ->
+                  ErrorResponseEntity.NotFoundEntity(
+                    path = prefix, method = "GET",
+                    message = ex.getMessage, targetResource = ""
+                  ).asJson
+              )
           }
         }
 
