@@ -12,7 +12,7 @@ export default {
       errorHandler(error)
     })
   },
-  createReservation: function (userId, params) {
+  createReservation: function (userId, params, callback, errorHandler) {
     let path = `${pathPrefix}?userId=${userId}`
     ApiClient.create(path, params, (response) => {
       console.log(response)
@@ -21,6 +21,13 @@ export default {
     })
   },
   updateReservation: function () {},
-  removeReservation: function () {}
+  removeReservation: function (eventId, callback, errorHandler) {
+    let path = `${pathPrefix}`
+    ApiClient.destroy(path, eventId, (response) => {
+      callback(response)
+    }, (error) => {
+      errorHandler(error)
+    })
+  }
 }
 </script>
