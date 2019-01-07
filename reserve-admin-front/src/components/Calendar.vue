@@ -39,6 +39,7 @@
          </div>
          <div class="modal-footer">
            <button type="button" class="btn btn-primary" v-on:click="updateCalenderEvent">Save changes</button>
+           <button type="button" class="btn btn-danger" v-on:click="destroyCalenderEvent">Destroy</button>
            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
          </div>
        </div>
@@ -127,6 +128,14 @@ export default {
 
       const modalDom = $(this.$refs.eventModal)
       modalDom.modal('hide')
+    },
+    destroyCalenderEvent: function () {
+      let eventId = ''
+      ReservationService.removeReservation(eventId, (response) => {
+        console.log(response)
+      }, (error) => {
+        console.error(error)
+      })
     },
     onSelectFunction: function (start, end) {
       console.log(start)
