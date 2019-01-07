@@ -16,6 +16,14 @@ import scala.util.{Failure, Success, Try}
 import io.wonder.soft.reser.application.services.ReserveService
 import io.wonder.soft.reser.domain.entity.{ErrorResponseEntity, ReserveEntity}
 
+
+/**
+  * refs: https://github.com/softwaremill/akka-http-session/blob/master/example/src/main/scala/com/softwaremill/example/ScalaExample.scala
+  * @param reserveService
+  * @param executionContext
+  * @param system
+  * @param materializer
+  */
 class ReserveRoute(reserveService: ReserveService)
                   (implicit executionContext: ExecutionContext, system: ActorSystem, materializer: Materializer)
   extends FailFastCirceSupport {
