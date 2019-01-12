@@ -102,12 +102,28 @@ export default {
       eventData.allDay = this.allDayCheckFlag
 
       console.log(eventData)
+      console.log(this.targetEvent._id)
       this.element.fullCalendar('renderEvent', eventData)
       this.element.fullCalendar('unselect')
       if (this.eventClickedFlag) {
-        this.element.fullCalendar('removeEvents', [this.targetEvent._id])
         // FIXME updateEvents API not work
         // this.element.fullCalendar('updateEvents', [this.targetEvent])
+
+        this.element.fullCalendar('removeEvents', [this.targetEvent._id])
+        let params = {
+          id: this.targetEvent.eventId,
+          name: eventData.title,
+          reserved_user_id: 'FIXME',
+          all_day_flag: eventData.allDay,
+          description: this.form.description,
+          reserved_from: moment(eventData.start).format('YYYY-MM-DDThh:mm:ss'),
+          reserved_to: moment(eventData.end).format('YYYY-MM-DDThh:mm:ss')
+        }
+        ReservationService.updateReservation(params, (response) => {
+          console.log(response)
+        }, (error) => {
+          console.error(error)
+        })
       } else {
         let params = {
           id: 1,
@@ -118,8 +134,11 @@ export default {
           reserved_from: moment(eventData.start).format('YYYY-MM-DDThh:mm:ss'),
           reserved_to: moment(eventData.end).format('YYYY-MM-DDThh:mm:ss')
         }
-        let userId = '1'
-        ReservationService.createReservation(userId, params)
+        ReservationService.createReservation(params, (response) => {
+          console.log(response)
+        }, (error) => {
+          console.error(error)
+        })
       }
 
       this.targetEvent = {}
@@ -130,9 +149,12 @@ export default {
       modalDom.modal('hide')
     },
     destroyCalenderEvent: function () {
-      let eventId = ''
-      ReservationService.removeReservation(eventId, (response) => {
+      let eventId = this.targetEvent.eventId
+      ReservationService.removeReservation(eventId, async (response) => {
         console.log(response)
+        this.element.fullCalendar('removeEvents', [this.targetEvent._id])
+        const modalDom = $(this.$refs.eventModal)
+        modalDom.modal('hide')
       }, (error) => {
         console.error(error)
       })
@@ -145,6 +167,11 @@ export default {
       // FIXME apply business hour
       this.pickerData.start = moment(start).format('YYYY-MM-DD HH:mm:ss')
       this.pickerData.end = moment(end).format('YYYY-MM-DD HH:mm:ss')
+
+      this.form = {
+        title: '',
+        description: ''
+      }
 
       const modalDom = $(this.$refs.eventModal)
       modalDom.modal('show')
@@ -177,6 +204,7 @@ export default {
       const modalDom = $(this.$refs.eventModal)
       this.eventClickedFlag = true
       this.targetEvent = event
+      console.log(this.targetEvent)
       modalDom.modal('show')
     },
     loadEvents: function () {
@@ -185,6 +213,7 @@ export default {
       ReservationService.findReservations(userId, (response) => {
         self.events = response.data.map(function (record) {
           let event = {
+            eventId: record.id,
             title: record.name,
             description: record.description,
             allDay: record.all_day_flag,
