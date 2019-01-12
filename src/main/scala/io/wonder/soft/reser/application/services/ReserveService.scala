@@ -15,4 +15,6 @@ class ReserveService(reserveRepository: ReserveRepository) {
 
   def update(reserveEntity: ReserveEntity)= reserveRepository.update(reserveEntity)
 
+  def remove(id: Int) = reserveRepository.destroyT(id)
+
 }

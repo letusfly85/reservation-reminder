@@ -37,7 +37,7 @@ class ReserveRoute(reserveService: ReserveService)
   val prefix = "reserves"
 
   val route =
-    path(prefix) {
+    pathPrefix(prefix) {
       parameters('user_id) { userId =>
         get {
           val futureReserves = reserveService.searchByUserId(userId)
@@ -71,6 +71,25 @@ class ReserveRoute(reserveService: ReserveService)
                   ).asJson
               )
           }
+        } ~ delete {
+          val reserveJson =
+          reserveService.remove(id.toInt).value.map { entity => entity match {
+            case Right(_entity) => {
+              StatusCodes.OK -> _entity.asJson
+            }
+            case Left(ex) => {
+              StatusCodes.InternalServerError ->
+                ErrorResponseEntity.NotFoundEntity(
+                  path = prefix, method = "DELETE",
+                  message = ex.getMessage, targetResource = ""
+                ).asJson
+            }
+          }}
+
+          completeOrRecoverWith(reserveJson) { extraction =>
+            failWith(extraction)
+          }
+
         }
 
       } ~ put {
