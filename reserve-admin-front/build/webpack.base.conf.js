@@ -19,7 +19,11 @@ const createLintingRule = () => ({
   }
 })
 
+const { VueLoaderPlugin } = require("vue-loader");
+
 module.exports = {
+  plugins: [new VueLoaderPlugin()],
+  performance: { hints: false }, // https://github.com/webpack/webpack/issues/3486
   context: path.resolve(__dirname, '../'),
   entry: {
     app: './src/main.js'
