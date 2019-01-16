@@ -6,7 +6,7 @@ name := "reserve-reminder"
 
 scalaVersion := "2.12.8"
 
-lazy val `reser` = (project in file("."))
+lazy val `reser` = (project in file(".")).enablePlugins(DockerPlugin)
 
 libraryDependencies ++= {
   val akkaV       = "2.5.19"
