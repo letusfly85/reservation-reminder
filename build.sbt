@@ -37,7 +37,8 @@ libraryDependencies ++= {
     "com.softwaremill.macwire" %% "macros" % macwireV,
     "org.typelevel" %% "cats-core" % "1.2.0",
     "org.quartz-scheduler" % "quartz" % "2.3.0",
-    "com.spotify" % "docker-client" % "8.14.4"
+    "com.spotify" % "docker-client" % "8.14.4",
+    "com.nulab-inc" %% "scala-oauth2-core" % "1.3.0"
   )
 }
 
